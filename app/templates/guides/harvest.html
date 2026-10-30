@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_harvest') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_harvest') }}</h1>
+  <p class="text-muted" style="margin: 0;">
+    Recognize physiological maturity, optimize harvesting timing, and prepare grains and produce for long-term storage without losses.
+  </p>
+</div>
+
+<!-- Crop Selector -->
+<div class="card" style="margin-bottom: 28px; padding: 18px;">
+  <form method="GET" action="{{ url_for('guides.harvest') }}" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <label for="crop-select" style="font-weight: 600; font-size: 14px;">Select Crop Harvest Guide:</label>
+    <select name="crop" id="crop-select" class="form-control" style="max-width: 320px;" onchange="this.form.submit()">
+      {% for c in crops %}
+        <option value="{{ c.slug }}" {{ 'selected' if selected_crop and selected_crop.id == c.id }}>
+          {{ c.name }} ({{ c.category }})
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+
+{% if selected_crop and selected_crop.harvest_guide %}
+  {% set hg = selected_crop.harvest_guide %}
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Harvesting Guide for {{ selected_crop.name }}</h2>
+    <div style="display: flex; gap: 10px;">
+      <a href="{{ url_for('crops.detail', slug=selected_crop.slug) }}" class="btn btn-secondary btn-sm">Crop Profile</a>
+      <a href="{{ url_for('guides.post_harvest', crop=selected_crop.slug) }}" class="btn btn-primary btn-sm">Post-Harvest &rarr;</a>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom: 24px;">
+    <div class="card" style="border-top: 4px solid var(--secondary-green);">
+      <h3 style="color: var(--primary-forest);">Maturity Indicators</h3>
+      <p style="font-size: 14px; line-height: 1.6;">{{ hg.maturity_indicators }}</p>
+      <div style="margin-top: 16px; padding: 10px; background: var(--pale-green-bg); border-radius: var(--radius-sm); font-size: 13px;">
+        <strong>Approximate Timeline:</strong> {{ hg.approximate_harvest_period }}
+        <div style="font-size: 12px; color: var(--secondary-text); margin-top: 2px;">
+          *Actual timing varies according to chosen cultivar, ambient temperature, planting date, and regional sunshine hours.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--sage-green);">
+      <h3 style="color: var(--primary-forest);">Harvesting Method</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin-bottom: 12px;">{{ hg.harvesting_method }}</p>
+      <h4 style="font-size: 14px; color: var(--warning); margin-bottom: 4px;">Handling Precautions:</h4>
+      <p style="font-size: 13px; line-height: 1.5; margin: 0;">{{ hg.handling_precautions }}</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 24px;">
+    <h3 style="color: var(--primary-forest); margin-bottom: 8px;">Storage Preparation &amp; Moisture Control</h3>
+    <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ hg.storage_preparation }}</p>
+  </div>
+
+  <div style="font-size: 12px; color: var(--secondary-text); padding: 8px;">
+    <strong>Verified Source:</strong> {{ hg.source_reference }} &bull; <em>Reviewed: {{ hg.last_reviewed_at }}</em>
+  </div>
+
+{% else %}
+  <div class="card"><p class="text-muted">Select a crop from above to view harvest guidelines.</p></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Guides for {{ crop.name }} &mdash; Admin{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs">
+  <a href="{{ url_for('admin.index') }}">Admin Dashboard</a>
+  <span>&rsaquo;</span>
+  <a href="{{ url_for('admin.crops_list') }}">Crops</a>
+  <span>&rsaquo;</span>
+  <span>Edit Guides: {{ crop.name }}</span>
+</nav>
+
+<div style="margin-bottom: 24px;">
+  <h1>Manage Guides for {{ crop.name }}</h1>
+  <p class="text-muted" style="margin: 0;">Update agronomic cultivation, harvesting, and post-harvest handling specifications.</p>
+</div>
+
+<div data-tabs>
+  <div class="tab-nav">
+    <button type="button" class="tab-btn active" data-tab-target="tab-edit-cult">Cultivation Guide</button>
+    <button type="button" class="tab-btn" data-tab-target="tab-edit-harvest">Harvest Guide</button>
+    <button type="button" class="tab-btn" data-tab-target="tab-edit-postharvest">Post-Harvest Guide</button>
+  </div>
+
+  <!-- 1. Cultivation Guide Form -->
+  <div id="tab-edit-cult" class="tab-content" style="display: block;">
+    <div class="card">
+      <h2 style="font-size: 18px; margin-bottom: 16px;">Cultivation Specifications</h2>
+      <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="guide_type" value="cultivation">
+
+        <div class="form-group">
+          <label class="form-label">Seed Selection &amp; Treatment</label>
+          <textarea name="seed_selection" class="form-control" rows="3">{{ cult.seed_selection if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Land &amp; Bed Preparation</label>
+          <textarea name="land_preparation" class="form-control" rows="3">{{ cult.land_preparation if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sowing &amp; Planting Method</label>
+          <textarea name="sowing_method" class="form-control" rows="3">{{ cult.sowing_method if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Irrigation Management</label>
+          <textarea name="irrigation" class="form-control" rows="3">{{ cult.irrigation if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nutrient Management</label>
+          <textarea name="nutrient_management" class="form-control" rows="3">{{ cult.nutrient_management if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Weed Management</label>
+          <textarea name="weed_management" class="form-control" rows="3">{{ cult.weed_management if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phenological Growth Stages</label>
+          <textarea name="growth_stages" class="form-control" rows="3">{{ cult.growth_stages if cult else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Common Mistakes to Avoid</label>
+          <textarea name="common_mistakes" class="form-control" rows="3">{{ cult.common_mistakes if cult else '' }}</textarea>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Authoritative Source Reference</label>
+            <input type="text" name="source_reference" value="{{ cult.source_reference if cult else '' }}" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Reviewed Date</label>
+            <input type="text" name="last_reviewed_at" value="{{ cult.last_reviewed_at if cult else '2026-03-01' }}" class="form-control">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Cultivation Guide</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Harvest Guide Form -->
+  <div id="tab-edit-harvest" class="tab-content" style="display: none;">
+    <div class="card">
+      <h2 style="font-size: 18px; margin-bottom: 16px;">Harvesting Specifications</h2>
+      <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="guide_type" value="harvest">
+
+        <div class="form-group">
+          <label class="form-label">Physiological Maturity Indicators</label>
+          <textarea name="maturity_indicators" class="form-control" rows="3">{{ harvest.maturity_indicators if harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Approximate Harvest Period</label>
+          <input type="text" name="approximate_harvest_period" value="{{ harvest.approximate_harvest_period if harvest else '' }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Harvesting Method</label>
+          <textarea name="harvesting_method" class="form-control" rows="3">{{ harvest.harvesting_method if harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Handling Precautions</label>
+          <textarea name="handling_precautions" class="form-control" rows="3">{{ harvest.handling_precautions if harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Storage Preparation &amp; Drying</label>
+          <textarea name="storage_preparation" class="form-control" rows="3">{{ harvest.storage_preparation if harvest else '' }}</textarea>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Source Reference</label>
+            <input type="text" name="source_reference" value="{{ harvest.source_reference if harvest else '' }}" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Reviewed Date</label>
+            <input type="text" name="last_reviewed_at" value="{{ harvest.last_reviewed_at if harvest else '2026-03-01' }}" class="form-control">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Harvest Guide</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Post-Harvest Guide Form -->
+  <div id="tab-edit-postharvest" class="tab-content" style="display: none;">
+    <div class="card">
+      <h2 style="font-size: 18px; margin-bottom: 16px;">Post-Harvest &amp; Processing Specifications</h2>
+      <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="guide_type" value="post_harvest">
+
+        <div class="form-group">
+          <label class="form-label">Cleaning &amp; Grading Protocol</label>
+          <textarea name="cleaning_and_grading" class="form-control" rows="3">{{ post_harvest.cleaning_and_grading if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Storage Methodology</label>
+          <textarea name="storage_method" class="form-control" rows="3">{{ post_harvest.storage_method if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Preservation Techniques</label>
+          <textarea name="preservation_method" class="form-control" rows="3">{{ post_harvest.preservation_method if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Processing Methods</label>
+          <textarea name="processing_method" class="form-control" rows="3">{{ post_harvest.processing_method if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Packaging Methods</label>
+          <textarea name="packaging_method" class="form-control" rows="2">{{ post_harvest.packaging_method if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Culinary Food Uses</label>
+          <textarea name="food_uses" class="form-control" rows="2">{{ post_harvest.food_uses if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Industrial Applications</label>
+          <textarea name="industrial_uses" class="form-control" rows="2">{{ post_harvest.industrial_uses if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">By-Products &amp; Feeds</label>
+          <textarea name="by_products" class="form-control" rows="2">{{ post_harvest.by_products if post_harvest else '' }}</textarea>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Source Reference</label>
+            <input type="text" name="source_reference" value="{{ post_harvest.source_reference if post_harvest else '' }}" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Reviewed Date</label>
+            <input type="text" name="last_reviewed_at" value="{{ post_harvest.last_reviewed_at if post_harvest else '2026-03-01' }}" class="form-control">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Post-Harvest Guide</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

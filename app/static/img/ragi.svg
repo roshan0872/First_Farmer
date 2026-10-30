@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="100%" height="100%">
+  <rect width="200" height="150" fill="#FAF4F0" rx="8"/>
+  <line x1="100" y1="125" x2="100" y2="70" stroke="#2E7D4F" stroke-width="4"/>
+  <!-- Fingers of millet -->
+  <path d="M100 70 Q80 50 72 32" stroke="#8C2F1B" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M100 70 Q90 45 88 28" stroke="#9E3A24" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M100 70 Q105 45 106 28" stroke="#8C2F1B" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M100 70 Q118 48 126 34" stroke="#9E3A24" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M100 70 Q125 58 132 45" stroke="#7A2817" stroke-width="6" stroke-linecap="round" fill="none"/>
+</svg>

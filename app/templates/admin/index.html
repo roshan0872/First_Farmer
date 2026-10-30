@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}System Administration &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px;">
+  <div>
+    <h1 style="color: #92400E;">{{ t('nav_admin') }}</h1>
+    <p class="text-muted" style="margin: 0;">Authorized administrator control center for crops, guides, pest databases, and audit logs.</p>
+  </div>
+  <div style="display: flex; gap: 8px;">
+    <a href="{{ url_for('admin.crops_list') }}" class="btn btn-secondary btn-sm">Manage Crops</a>
+    <a href="{{ url_for('admin.pests_list') }}" class="btn btn-secondary btn-sm">Manage Pests</a>
+    <a href="{{ url_for('admin.products_list') }}" class="btn btn-secondary btn-sm">Manage Products</a>
+  </div>
+</div>
+
+<!-- Admin Stats Cards -->
+<div class="grid grid-4" style="margin-bottom: 32px;">
+  <div class="card" style="padding: 20px; border-left: 4px solid var(--primary-forest);">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600;">Total Crops</div>
+    <div style="font-size: 32px; font-weight: 700; color: var(--primary-forest);">{{ crops_count }}</div>
+    <a href="{{ url_for('admin.crop_create') }}" style="font-size: 12px; color: var(--primary-forest); font-weight: 600;">+ Add New Crop</a>
+  </div>
+
+  <div class="card" style="padding: 20px; border-left: 4px solid var(--secondary-green);">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600;">Registered Learners</div>
+    <div style="font-size: 32px; font-weight: 700; color: var(--secondary-green);">{{ users_count }}</div>
+    <div style="font-size: 12px; color: var(--secondary-text);">Active user accounts</div>
+  </div>
+
+  <div class="card" style="padding: 20px; border-left: 4px solid var(--warning);">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600;">Pests &amp; Diseases</div>
+    <div style="font-size: 32px; font-weight: 700; color: var(--warning);">{{ pests_count }}</div>
+    <a href="{{ url_for('admin.pest_create') }}" style="font-size: 12px; color: var(--warning); font-weight: 600;">+ Add Pest Record</a>
+  </div>
+
+  <div class="card" style="padding: 20px; border-left: 4px solid #2563EB;">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600;">Value-Added Products</div>
+    <div style="font-size: 32px; font-weight: 700; color: #2563EB);">{{ products_count }}</div>
+    <a href="{{ url_for('admin.product_create') }}" style="font-size: 12px; color: #2563EB; font-weight: 600;">+ Add Product</a>
+  </div>
+</div>
+
+<!-- Activity Audit Log -->
+<div class="card">
+  <h2 class="card-title" style="font-size: 18px; margin-bottom: 16px;">Recent Administrative Activity Log</h2>
+  {% if recent_logs %}
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--border-color); color: var(--secondary-text);">
+            <th style="padding: 10px;">Timestamp</th>
+            <th style="padding: 10px;">Action</th>
+            <th style="padding: 10px;">Entity</th>
+            <th style="padding: 10px;">Entity ID</th>
+            <th style="padding: 10px;">Admin ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px; color: var(--secondary-text); font-size: 13px;">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</td>
+              <td style="padding: 10px; font-weight: 500;">{{ log.action }}</td>
+              <td style="padding: 10px;"><span class="badge badge-difficulty">{{ log.entity_type }}</span></td>
+              <td style="padding: 10px; color: var(--secondary-text);">#{{ log.entity_id or '-' }}</td>
+              <td style="padding: 10px; color: var(--secondary-text);">User #{{ log.user_id or 'System' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted" style="margin: 0;">No administrative events recorded yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

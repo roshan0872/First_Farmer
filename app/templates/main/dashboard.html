@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_dashboard') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 28px;">
+  <h1 style="font-size: 28px;">
+    {% if current_user %}
+      Welcome back, {{ current_user.full_name }}!
+    {% else %}
+      Learner Dashboard
+    {% endif %}
+  </h1>
+  <p class="text-muted" style="margin: 0;">
+    Your central agricultural hub for crop discovery, cultivation mastery, and value addition insights.
+  </p>
+</div>
+
+<!-- Metrics / Quick Action Cards -->
+<div class="grid grid-4" style="margin-bottom: 32px;">
+  <div class="card" style="padding: 20px;">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600; margin-bottom: 6px;">Library Knowledge</div>
+    <div style="font-size: 32px; font-weight: 700; color: var(--primary-forest);">{{ total_crops }}</div>
+    <div style="font-size: 12px; color: var(--secondary-text); margin-top: 4px;">Crops fully documented</div>
+  </div>
+
+  <div class="card" style="padding: 20px;">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600; margin-bottom: 6px;">Saved Crops</div>
+    <div style="font-size: 32px; font-weight: 700; color: var(--secondary-green);">{{ saved_crops_count }}</div>
+    <div style="font-size: 12px; color: var(--secondary-text); margin-top: 4px;">In your personal bookmarks</div>
+  </div>
+
+  <div class="card" style="padding: 20px;">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600; margin-bottom: 6px;">Completed Modules</div>
+    <div style="font-size: 32px; font-weight: 700; color: #2563EB;">{{ completed_modules_count }}</div>
+    <div style="font-size: 12px; color: var(--secondary-text); margin-top: 4px;">Milestones achieved</div>
+  </div>
+
+  <div class="card" style="padding: 20px;">
+    <div style="font-size: 13px; color: var(--secondary-text); font-weight: 600; margin-bottom: 6px;">Weather Advisory</div>
+    <a href="{{ url_for('weather.index') }}" class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%;">
+      Check Advisory &rarr;
+    </a>
+  </div>
+</div>
+
+<!-- Main Dashboard Grid: Charts and Recent Learning -->
+<div class="grid grid-2" style="margin-bottom: 32px;">
+  <!-- Chart Card -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title" style="font-size: 17px; margin: 0;">Crop Distribution by Category</h2>
+      <span class="badge badge-category">Live DB Data</span>
+    </div>
+    <div style="position: relative; height: 260px;">
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Featured Value Added Products -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title" style="font-size: 17px; margin: 0;">Featured Value-Added Products</h2>
+      <a href="{{ url_for('guides.post_harvest') }}" class="btn btn-secondary btn-sm">Explore All &rarr;</a>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      {% for prod in featured_products %}
+        <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #FAFBF9; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; color: var(--primary-forest);">{{ prod.product_name }}</div>
+            <div style="font-size: 12px; color: var(--secondary-text);">Raw: {{ prod.crop.name }} &bull; {{ prod.product_category }}</div>
+          </div>
+          <a href="{{ url_for('guides.post_harvest', crop=prod.crop.slug) }}" class="btn btn-secondary btn-sm">Details</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Section: Recently Viewed or Recommended Actions -->
+<div class="grid grid-2">
+  <!-- Recently Viewed or Quick Links -->
+  <div class="card">
+    <h2 class="card-title" style="font-size: 17px; margin-bottom: 16px;">Quick Actions &amp; Tools</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <a href="{{ url_for('recommendations.recommend') }}" class="nav-link" style="border: 1px solid var(--border-color);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <div>
+          <strong>Run Crop Recommendation</strong>
+          <div style="font-size: 12px; color: var(--secondary-text);">Find suitable crops for your soil and season</div>
+        </div>
+      </a>
+      <a href="{{ url_for('chatbot.index') }}" class="nav-link" style="border: 1px solid var(--border-color);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <div>
+          <strong>Ask Agriculture Chatbot</strong>
+          <div style="font-size: 12px; color: var(--secondary-text);">Search cultivation guides and pest solutions</div>
+        </div>
+      </a>
+      <a href="{{ url_for('guides.pests_diseases') }}" class="nav-link" style="border: 1px solid var(--border-color);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4c0 .8.2 1.5.5 2.1L3.3 13.3c-.4.4-.4 1 0 1.4.4.4 1 .4 1.4 0l4.8-4.8c.6.3 1.3.5 2.1.5a4 4 0 0 0 4-4c0-.8-.2-1.5-.5-2.1l4.8-4.8c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0l-4.8 4.8c-.6-.3-1.3-.5-2.1-.5z"></path></svg>
+        <div>
+          <strong>Explore Pest &amp; Disease IPM</strong>
+          <div style="font-size: 12px; color: var(--secondary-text);">Prevent crop damage with ecological management</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Quiz Results or Empty State -->
+  <div class="card">
+    <h2 class="card-title" style="font-size: 17px; margin-bottom: 16px;">Recent Quiz Attempts</h2>
+    {% if current_user and recent_quiz_results %}
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        {% for att in recent_quiz_results %}
+          <div style="padding: 10px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 600;">{{ att.crop.name }} Quiz</div>
+              <div style="font-size: 12px; color: var(--secondary-text);">{{ att.completed_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+            <span class="badge {{ 'badge-strong' if att.score == att.total_questions else 'badge-moderate' }}">
+              {{ att.score }} / {{ att.total_questions }} ({{ (att.score / att.total_questions * 100)|round|int }}%)
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding: 24px; text-align: center; background: var(--pale-green-bg); border-radius: var(--radius-md);">
+        <p class="text-muted" style="margin-bottom: 12px;">No quiz attempts recorded yet.</p>
+        <p style="font-size: 13px; margin-bottom: 16px;">Test your knowledge on any crop in our library and earn progress badges!</p>
+        <a href="{{ url_for('crops.library') }}" class="btn btn-primary btn-sm">Explore Crops &amp; Quizzes</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const ctx = document.getElementById("categoryChart");
+  if (!ctx) return;
+
+  const labels = {{ category_labels | tojson }};
+  const dataCounts = {{ category_counts | tojson }};
+
+  new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dataCounts,
+        backgroundColor: [
+          "#1F5135",
+          "#2E7D4F",
+          "#6E9F78",
+          "#A86412",
+          "#2563EB",
+          "#7C3AED"
+        ],
+        borderWidth: 2,
+        borderColor: "#FFFFFF"
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            boxWidth: 12,
+            font: { family: "Inter", size: 12 }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

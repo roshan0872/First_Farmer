@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translated_name }} &mdash; {{ t('nav_cultivation') }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <a href="{{ url_for('main.index') }}">Home</a>
+  <span>&rsaquo;</span>
+  <a href="{{ url_for('crops.library') }}">Crop Library</a>
+  <span>&rsaquo;</span>
+  <span style="color: var(--primary-forest); font-weight: 600;">{{ translated_name }}</span>
+</nav>
+
+<!-- Untranslated Notice if active language != en and content lacks translation -->
+{% if current_lang != 'en' and not has_translation %}
+  <div class="alert alert-info" style="margin-bottom: 20px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+    <div>{{ t('untranslated_notice') }}</div>
+  </div>
+{% endif %}
+
+<!-- Crop Hero Header Card -->
+<div class="card" style="margin-bottom: 28px; padding: 28px;">
+  <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+    <img src="{{ crop.image_path }}" alt="{{ crop.name }}" style="width: 140px; height: 110px; object-fit: contain; background: var(--pale-green-bg); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+    <div style="flex: 1; min-width: 260px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
+        <h1 style="font-size: 28px; margin: 0;">{{ translated_name }}</h1>
+        <span class="badge badge-category">{{ crop.category }}</span>
+        <span class="badge badge-difficulty">{{ crop.difficulty_level }}</span>
+      </div>
+      <div style="font-size: 15px; font-style: italic; color: var(--secondary-text); margin-bottom: 12px;">
+        {{ crop.scientific_name }}
+      </div>
+      <p class="text-muted" style="margin-bottom: 16px; font-size: 15px; line-height: 1.6;">
+        {{ translated_desc }}
+      </p>
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        {% if current_user %}
+          <!-- Bookmark Button -->
+          <form method="POST" action="{{ url_for('learning.toggle_bookmark', crop_id=crop.id) }}" class="bookmark-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-secondary btn-sm bookmark-btn {{ 'active' if is_bookmarked }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="{{ '#1F5135' if is_bookmarked else 'none' }}" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg>
+              <span class="btn-label">{{ t('btn_bookmarked') if is_bookmarked else t('btn_bookmark') }}</span>
+            </button>
+          </form>
+
+          <!-- Module Completion Toggle -->
+          {% if crop.learning_module %}
+            <form method="POST" action="{{ url_for('learning.toggle_module_complete', slug=crop.learning_module.slug) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn {{ 'btn-primary' if not module_completed else 'btn-secondary' }} btn-sm">
+                {% if module_completed %}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Completed</span>
+                {% else %}
+                  <span>{{ t('btn_mark_completed') }}</span>
+                {% endif %}
+              </button>
+            </form>
+          {% endif %}
+        {% endif %}
+
+        <!-- Take Quiz Button -->
+        <a href="{{ url_for('learning.quiz', slug=crop.slug) }}" class="btn btn-secondary btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <span>{{ t('btn_take_quiz') }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed Tab Navigation -->
+<div data-tabs>
+  <div class="tab-nav" role="tablist">
+    <button type="button" class="tab-btn active" data-tab-target="tab-cultivation">Cultivation Guide</button>
+    <button type="button" class="tab-btn" data-tab-target="tab-climate">Climate &amp; Soil</button>
+    <button type="button" class="tab-btn" data-tab-target="tab-pests">Pests &amp; Protection ({{ crop.pests_diseases|length }})</button>
+    <button type="button" class="tab-btn" data-tab-target="tab-harvest">Harvesting</button>
+    <button type="button" class="tab-btn" data-tab-target="tab-postharvest">Post-Harvest &amp; Products ({{ crop.products|length }})</button>
+  </div>
+
+  <!-- Tab 1: Complete Cultivation Guide -->
+  <div id="tab-cultivation" class="tab-content" style="display: block;">
+    {% if crop.cultivation_guide %}
+      {% set cg = crop.cultivation_guide %}
+      <div class="grid grid-2" style="margin-bottom: 24px;">
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Seed Selection &amp; Treatment</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.seed_selection }}</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Land &amp; Bed Preparation</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.land_preparation }}</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Sowing &amp; Planting Method</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.sowing_method }}</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Irrigation Management</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.irrigation }}</p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--secondary-green);">
+          <h2 class="card-title" style="font-size: 16px;">Nutrient Management</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin-bottom: 10px;">{{ cg.nutrient_management }}</p>
+          <div style="font-size: 12px; color: var(--secondary-text); background: var(--pale-green-bg); padding: 8px 12px; border-radius: var(--radius-sm);">
+            <strong>Dosage Note:</strong> Universal fertilizer dosages are not prescribed. Nutritional requirements strictly depend on routine soil test analyses, regional agro-climatic subzones, and local extension service recommendations.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Weed Management &amp; Interculture</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.weed_management }}</p>
+        </div>
+      </div>
+
+      <!-- Growth Stages & Common Mistakes -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h2 class="card-title" style="font-size: 16px; margin-bottom: 12px;">Growth Stages Timeline</h2>
+        <div style="background: var(--pale-green-bg); padding: 14px 18px; border-radius: var(--radius-md); font-size: 14px; line-height: 1.6;">
+          {{ cg.growth_stages }}
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--warning); margin-bottom: 24px;">
+        <h2 class="card-title" style="font-size: 16px; color: var(--warning); margin-bottom: 10px;">Common Beginner Mistakes to Avoid</h2>
+        <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.common_mistakes }}</p>
+      </div>
+
+      <!-- Reference Citation -->
+      <div style="font-size: 12px; color: var(--secondary-text); padding: 8px;">
+        <strong>Authoritative Source Reference:</strong> {{ cg.source_reference or 'State Agricultural Extension Services' }} &bull; <em>Reviewed: {{ cg.last_reviewed_at }}</em>
+      </div>
+    {% else %}
+      <div class="card"><p class="text-muted">Cultivation guide being updated.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Tab 2: Climate & Soil -->
+  <div id="tab-climate" class="tab-content" style="display: none;">
+    <div class="grid grid-2">
+      <div class="card">
+        <h2 class="card-title" style="font-size: 16px;">Soil &amp; Climate Requirements</h2>
+        <p style="font-size: 14px; line-height: 1.6;">{{ crop.soil_climate_summary }}</p>
+        <div style="margin-top: 16px; font-size: 13px;">
+          <div><strong>Suitable Soil Types:</strong> {{ crop.soils|map(attribute='name')|join(', ') }}</div>
+          <div><strong>Recommended Seasons:</strong> {{ crop.seasons|map(attribute='name')|join(', ') }}</div>
+          <div><strong>Adapted Regions:</strong> {{ crop.regions|map(attribute='name')|join(', ') }}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" style="font-size: 16px;">Climatic Parameters</h2>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+          <div style="padding: 12px; background: #FAFBF9; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <strong>Ideal Temperature Range:</strong>
+            <div>{{ crop.min_temp }}&deg;C &mdash; {{ crop.max_temp }}&deg;C</div>
+          </div>
+          <div style="padding: 12px; background: #FAFBF9; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <strong>Annual Rainfall Requirement:</strong>
+            <div>{{ crop.min_rainfall }} mm &mdash; {{ crop.max_rainfall }} mm</div>
+          </div>
+          <div style="font-size: 12px; color: var(--secondary-text);">
+            Citation: {{ crop.climate_source_note or 'Agro-climatic Atlas' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Pests & Diseases -->
+  <div id="tab-pests" class="tab-content" style="display: none;">
+    <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="font-size: 18px; margin: 0;">Documented Pests &amp; Diseases for {{ crop.name }}</h2>
+      <a href="{{ url_for('guides.pests_diseases', crop=crop.id) }}" class="btn btn-secondary btn-sm">Full IPM Guide &rarr;</a>
+    </div>
+
+    <div class="grid grid-2">
+      {% for pd in crop.pests_diseases %}
+        <div class="card" style="border-top: 3px solid {{ 'var(--warning)' if pd.type == 'pest' else 'var(--error)' }};">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-size: 16px; margin: 0;">{{ pd.name }}</h3>
+            <span class="badge {{ 'badge-moderate' if pd.type == 'pest' else 'badge-weak' }}">{{ pd.type }}</span>
+          </div>
+          <div style="font-size: 13px; margin-bottom: 8px;"><strong>Symptoms:</strong> {{ pd.symptoms }}</div>
+          <div style="font-size: 13px; margin-bottom: 8px;"><strong>Conditions:</strong> {{ pd.contributing_conditions }}</div>
+          <div style="font-size: 13px; margin-bottom: 8px; color: #166534;"><strong>Prevention / IPM:</strong> {{ pd.prevention }}</div>
+          <div style="font-size: 13px;"><strong>Management:</strong> {{ pd.management }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Tab 4: Harvesting -->
+  <div id="tab-harvest" class="tab-content" style="display: none;">
+    {% if crop.harvest_guide %}
+      {% set hg = crop.harvest_guide %}
+      <div class="grid grid-2">
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Maturity Indicators</h2>
+          <p style="font-size: 14px; line-height: 1.6;">{{ hg.maturity_indicators }}</p>
+          <div style="margin-top: 14px; font-size: 13px;">
+            <strong>Approximate Harvest Window:</strong> {{ hg.approximate_harvest_period }}
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" style="font-size: 16px;">Harvesting Method &amp; Precautions</h2>
+          <p style="font-size: 14px; line-height: 1.6; margin-bottom: 12px;"><strong>Method:</strong> {{ hg.harvesting_method }}</p>
+          <p style="font-size: 14px; line-height: 1.6; margin: 0;"><strong>Precautions:</strong> {{ hg.handling_precautions }}</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 20px;">
+        <h2 class="card-title" style="font-size: 16px;">Storage Preparation</h2>
+        <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ hg.storage_preparation }}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Tab 5: Post-Harvest & Products -->
+  <div id="tab-postharvest" class="tab-content" style="display: none;">
+    {% if crop.post_harvest_guide %}
+      {% set phg = crop.post_harvest_guide %}
+      <div class="card" style="margin-bottom: 24px;">
+        <h2 class="card-title" style="font-size: 16px; margin-bottom: 12px;">Post-Harvest Handling &amp; Processing</h2>
+        <div class="grid grid-2" style="font-size: 14px; line-height: 1.6;">
+          <div><strong>Cleaning &amp; Grading:</strong> {{ phg.cleaning_and_grading }}</div>
+          <div><strong>Storage Method:</strong> {{ phg.storage_method }}</div>
+          <div><strong>Preservation:</strong> {{ phg.preservation_method }}</div>
+          <div><strong>Processing Method:</strong> {{ phg.processing_method }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <h2 style="font-size: 18px; margin-bottom: 16px;">Value-Added Products Catalog</h2>
+    <div class="grid grid-2">
+      {% for p in crop.products %}
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <h3 style="font-size: 16px; margin: 0; color: var(--primary-forest);">{{ p.product_name }}</h3>
+            <span class="badge badge-category">{{ p.product_category }}</span>
+          </div>
+          <div style="font-size: 13px; margin-bottom: 8px;"><strong>Raw Material:</strong> {{ p.raw_material }}</div>
+          <div style="font-size: 13px; margin-bottom: 8px;"><strong>Processing Overview:</strong> {{ p.processing_overview }}</div>
+          <div style="font-size: 13px; margin-bottom: 8px;"><strong>Common Uses:</strong> {{ p.common_uses }}</div>
+          <div style="font-size: 13px; color: var(--secondary-green);"><strong>Value Addition:</strong> {{ p.value_addition_notes }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

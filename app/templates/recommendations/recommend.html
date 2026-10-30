@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('rec_title') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('rec_title') }}</h1>
+  <p class="text-muted" style="margin: 0;">{{ t('rec_subtitle') }}</p>
+</div>
+
+<!-- Input Form Card -->
+<div class="card" style="margin-bottom: 32px;">
+  <form method="POST" action="{{ url_for('recommendations.recommend') }}" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="grid grid-3" style="margin-bottom: 16px;">
+      <div class="form-group">
+        <label class="form-label" for="soil_type">{{ t('rec_soil') }} *</label>
+        {{ form.soil_type(class="form-control", id="soil_type") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="season">{{ t('rec_season') }} *</label>
+        {{ form.season(class="form-control", id="season") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="water_availability">{{ t('rec_water') }} *</label>
+        {{ form.water_availability(class="form-control", id="water_availability") }}
+      </div>
+    </div>
+
+    <div class="grid grid-4" style="margin-bottom: 20px;">
+      <div class="form-group">
+        <label class="form-label" for="region">{{ t('rec_region') }}</label>
+        {{ form.region(class="form-control", id="region") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="temperature">{{ t('rec_temp') }}</label>
+        {{ form.temperature(class="form-control", id="temperature", placeholder="e.g. 28") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="rainfall">{{ t('rec_rainfall') }}</label>
+        {{ form.rainfall(class="form-control", id="rainfall", placeholder="e.g. 850") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="preferred_category">{{ t('rec_category') }}</label>
+        {{ form.preferred_category(class="form-control", id="preferred_category") }}
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button type="submit" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>{{ t('rec_find_btn') }}</span>
+      </button>
+      <span style="font-size: 13px; color: var(--secondary-text);">* Required fields for baseline agronomic calculation</span>
+    </div>
+  </form>
+</div>
+
+<!-- Results Stream -->
+{% if has_searched and results %}
+  <div style="margin-bottom: 24px;">
+    <h2>Recommendation Results</h2>
+    <p class="text-muted" style="margin: 0;">Found {{ results.total_results }} crop options evaluated against your specified conditions.</p>
+  </div>
+
+  {% if results.missing_fields %}
+    <div class="alert alert-info" style="margin-bottom: 24px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <div>
+        <strong>Optional Criteria Omitted:</strong> {{ results.missing_fields | join(', ') }}.
+        Scoring weights have been fairly redistributed across your active soil, season, and water parameters.
+      </div>
+    </div>
+  {% endif %}
+
+  {% if results.total_results == 0 %}
+    <div class="card" style="text-align: center; padding: 48px 24px;">
+      <h3>{{ t('rec_no_match') }}</h3>
+      <p class="text-muted" style="max-width: 500px; margin: 12px auto 20px;">
+        Certain crops could not tolerate low water availability in combination with heavy soils or selected season. Try adjusting water availability (with supplemental micro-irrigation) or switching season.
+      </p>
+    </div>
+  {% else %}
+
+    <!-- 1. Strong Matches -->
+    {% if results.strong_matches %}
+      <div style="margin-bottom: 32px;">
+        <h3 style="color: #166534; font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          {{ t('rec_strong_match') }} (Score &ge; 75%)
+        </h3>
+        <div class="grid grid-2">
+          {% for item in results.strong_matches %}
+            {% set c = item.crop %}
+            <article class="card" style="border-top: 4px solid var(--primary-forest); display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div>
+                  <h4 style="font-size: 18px; margin: 0; color: var(--primary-forest);">{{ c.name }}</h4>
+                  <div style="font-size: 13px; font-style: italic; color: var(--secondary-text);">{{ c.scientific_name }}</div>
+                </div>
+                <span class="badge badge-strong">{{ item.score }}% Match</span>
+              </div>
+
+              <div style="font-size: 13px; color: var(--primary-text); margin-bottom: 12px; line-height: 1.5;">
+                <strong>Explanation:</strong> {{ item.explanation }}
+              </div>
+
+              <div style="background: #F0FDF4; padding: 10px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 10px;">
+                <strong style="color: #166534;">Matched Criteria:</strong>
+                <ul style="padding-left: 18px; margin: 4px 0 0;">
+                  {% for mc in item.matched_criteria %}
+                    <li>{{ mc }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              {% if item.conflicts %}
+                <div style="background: #FFFBEB; padding: 10px; border-radius: var(--radius-sm); font-size: 12px; margin-bottom: 12px;">
+                  <strong style="color: #92400E;">Considerations:</strong>
+                  <ul style="padding-left: 18px; margin: 4px 0 0;">
+                    {% for conf in item.conflicts %}
+                      <li>{{ conf }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              <div style="margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: var(--secondary-text);">Category: {{ c.category }}</span>
+                <a href="{{ url_for('crops.detail', slug=c.slug) }}" class="btn btn-primary btn-sm">
+                  Open Learning Page &rarr;
+                </a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- 2. Moderate Matches -->
+    {% if results.moderate_matches %}
+      <div style="margin-bottom: 32px;">
+        <h3 style="color: #92400E; font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          {{ t('rec_moderate_match') }} (Score 50% &mdash; 74%)
+        </h3>
+        <div class="grid grid-2">
+          {% for item in results.moderate_matches %}
+            {% set c = item.crop %}
+            <article class="card" style="border-top: 4px solid var(--warning); display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div>
+                  <h4 style="font-size: 18px; margin: 0; color: var(--primary-text);">{{ c.name }}</h4>
+                  <div style="font-size: 13px; font-style: italic; color: var(--secondary-text);">{{ c.scientific_name }}</div>
+                </div>
+                <span class="badge badge-moderate">{{ item.score }}% Match</span>
+              </div>
+
+              <div style="font-size: 13px; margin-bottom: 12px; line-height: 1.5;">
+                <strong>Explanation:</strong> {{ item.explanation }}
+              </div>
+
+              <div style="background: #F8FAFC; padding: 10px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 10px;">
+                <strong>Matched Criteria:</strong>
+                <ul style="padding-left: 18px; margin: 4px 0 0;">
+                  {% for mc in item.matched_criteria %}
+                    <li>{{ mc }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              {% if item.conflicts %}
+                <div style="background: #FFFBEB; padding: 10px; border-radius: var(--radius-sm); font-size: 12px; margin-bottom: 12px;">
+                  <strong style="color: #92400E;">Limiting Factors:</strong>
+                  <ul style="padding-left: 18px; margin: 4px 0 0;">
+                    {% for conf in item.conflicts %}
+                      <li>{{ conf }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              <div style="margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: var(--secondary-text);">Category: {{ c.category }}</span>
+                <a href="{{ url_for('crops.detail', slug=c.slug) }}" class="btn btn-secondary btn-sm">
+                  Open Learning Page &rarr;
+                </a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- 3. Weak Matches (Collapsible) -->
+    {% if results.weak_matches %}
+      <details class="card" style="margin-bottom: 24px; padding: 16px;">
+        <summary style="font-weight: 600; cursor: pointer; color: var(--secondary-text); font-size: 14px;">
+          View {{ results.weak_matches|length }} Weak Matches (Score &lt; 50%)
+        </summary>
+        <div class="grid grid-2" style="margin-top: 16px;">
+          {% for item in results.weak_matches %}
+            {% set c = item.crop %}
+            <div style="padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: #FAFBF9;">
+              <div style="display: flex; justify-content: space-between;">
+                <strong>{{ c.name }}</strong>
+                <span class="badge badge-weak">{{ item.score }}%</span>
+              </div>
+              <div style="font-size: 12px; color: var(--secondary-text); margin-top: 4px;">{{ item.explanation }}</div>
+              <div style="margin-top: 8px;">
+                <a href="{{ url_for('crops.detail', slug=c.slug) }}" style="font-size: 12px; color: var(--primary-forest);">Learn More &rarr;</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </details>
+    {% endif %}
+
+  {% endif %}
+{% endif %}
+{% endblock %}

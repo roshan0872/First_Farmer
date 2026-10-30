@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} &mdash; Admin{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs">
+  <a href="{{ url_for('admin.index') }}">Admin Dashboard</a>
+  <span>&rsaquo;</span>
+  <a href="{{ url_for('admin.crops_list') }}">Crops</a>
+  <span>&rsaquo;</span>
+  <span>{{ title }}</span>
+</nav>
+
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+  <h1 style="font-size: 24px; margin-bottom: 20px;">{{ title }}</h1>
+
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="grid grid-2">
+      <div class="form-group">
+        <label class="form-label" for="name">Crop Common Name *</label>
+        {{ form.name(class="form-control", id="name") }}
+        {% for err in form.name.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="slug">URL Slug (Unique) *</label>
+        {{ form.slug(class="form-control", id="slug", placeholder="e.g. rice-paddy") }}
+        {% for err in form.slug.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="form-group">
+        <label class="form-label" for="scientific_name">Scientific / Botanical Name</label>
+        {{ form.scientific_name(class="form-control", id="scientific_name") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="category">Category *</label>
+        {{ form.category(class="form-control", id="category") }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Educational Overview &amp; Description *</label>
+      {{ form.description(class="form-control", id="description", rows=4) }}
+      {% for err in form.description.errors %}
+        <div class="form-error">{{ err }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="grid grid-3">
+      <div class="form-group">
+        <label class="form-label" for="water_requirement">Water Requirement *</label>
+        {{ form.water_requirement(class="form-control", id="water_requirement") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="difficulty_level">Difficulty Level</label>
+        {{ form.difficulty_level(class="form-control", id="difficulty_level") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="image_path">SVG / Image Path</label>
+        {{ form.image_path(class="form-control", id="image_path", placeholder="/static/img/rice.svg") }}
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="form-group">
+        <label class="form-label" for="season_summary">Season Summary</label>
+        {{ form.season_summary(class="form-control", id="season_summary") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="soil_climate_summary">Soil &amp; Climate Summary</label>
+        {{ form.soil_climate_summary(class="form-control", id="soil_climate_summary", rows=2) }}
+      </div>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="form-group">
+        <label class="form-label" for="min_temp">Min Temp (&deg;C)</label>
+        {{ form.min_temp(class="form-control", id="min_temp") }}
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="max_temp">Max Temp (&deg;C)</label>
+        {{ form.max_temp(class="form-control", id="max_temp") }}
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="min_rainfall">Min Rain (mm)</label>
+        {{ form.min_rainfall(class="form-control", id="min_rainfall") }}
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="max_rainfall">Max Rain (mm)</label>
+        {{ form.max_rainfall(class="form-control", id="max_rainfall") }}
+      </div>
+    </div>
+
+    <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+      {{ form.is_published(id="is_published") }}
+      <label for="is_published" style="font-weight: 600; cursor: pointer;">Publish immediately (visible to all learners)</label>
+    </div>
+
+    <div style="display: flex; gap: 12px; margin-top: 16px;">
+      <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+      <a href="{{ url_for('admin.crops_list') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

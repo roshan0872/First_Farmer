@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Bad Request &mdash; 400{% endblock %}
+{% block content %}
+<div class="card" style="text-align: center; max-width: 600px; margin: 40px auto; padding: 48px 24px;">
+  <div style="font-size: 56px; font-weight: 800; color: var(--warning); margin-bottom: 12px;">400</div>
+  <h1 style="font-size: 24px; margin-bottom: 12px;">Bad Request</h1>
+  <p class="text-muted" style="margin-bottom: 24px;">
+    The submitted request contained invalid parameters or failed form validation checks.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 12px;">
+    <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Go to Home</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found &mdash; 404{% endblock %}
+{% block content %}
+<div class="card" style="text-align: center; max-width: 600px; margin: 40px auto; padding: 48px 24px;">
+  <div style="font-size: 56px; font-weight: 800; color: var(--sage-green); margin-bottom: 12px;">404</div>
+  <h1 style="font-size: 24px; margin-bottom: 12px;">Resource Not Found</h1>
+  <p class="text-muted" style="margin-bottom: 24px;">
+    The agricultural topic, crop record, or guide page you requested could not be found or has been moved.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 12px;">
+    <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Return Home</a>
+    <a href="{{ url_for('crops.library') }}" class="btn btn-primary">Browse Crop Library</a>
+  </div>
+</div>
+{% endblock %}

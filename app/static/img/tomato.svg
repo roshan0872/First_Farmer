@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="100%" height="100%">
+  <rect width="200" height="150" fill="#FDF3F2" rx="8"/>
+  <circle cx="100" cy="82" r="38" fill="#D93829"/>
+  <ellipse cx="90" cy="70" rx="10" ry="16" fill="#F87171" opacity="0.4" transform="rotate(-20 90 70)"/>
+  <!-- Calyx -->
+  <path d="M100 45 L98 32 M100 45 L85 40 M100 45 L115 40 M100 45 L90 52 M100 45 L110 52" stroke="#2E7D4F" stroke-width="4.5" stroke-linecap="round"/>
+</svg>

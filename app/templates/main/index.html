@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('app_name') }} &mdash; {{ t('app_tagline') }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section style="background: linear-gradient(180deg, #FFFFFF 0%, var(--pale-green-bg) 100%); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 48px 36px; margin-bottom: 36px; text-align: center;">
+  <span class="badge badge-category" style="margin-bottom: 16px; font-size: 13px; padding: 6px 14px;">Educational Agriculture Guidance</span>
+  <h1 style="font-size: 36px; max-width: 800px; margin: 0 auto 16px; color: var(--primary-forest);">
+    {{ t('app_tagline') }}
+  </h1>
+  <p class="text-muted" style="max-width: 680px; margin: 0 auto 28px; font-size: 17px;">
+    An open, structured learning system for students, beginners, and agri-entrepreneurs. Discover optimal crops for your soil, step-by-step cultivation practices, ecological pest protection, and commercial value-added products.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+    <a href="{{ url_for('crops.library') }}" class="btn btn-primary" style="font-size: 15px; padding: 12px 28px;">
+      {{ t('btn_explore_crops') }} &rarr;
+    </a>
+    <a href="{{ url_for('recommendations.recommend') }}" class="btn btn-secondary" style="font-size: 15px; padding: 12px 28px;">
+      {{ t('btn_start_learning') }}
+    </a>
+  </div>
+</section>
+
+<!-- The Six-Step Learning Journey -->
+<section style="margin-bottom: 40px;">
+  <div style="text-align: center; margin-bottom: 24px;">
+    <h2>The Complete Farm-to-Value Learning Journey</h2>
+    <p class="text-muted">Master agriculture through six interconnected, science-backed stages.</p>
+  </div>
+  <div class="grid grid-3">
+    <div class="card" style="border-top: 4px solid var(--primary-forest);">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="background: var(--pale-green-bg); color: var(--primary-forest); font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">1</span>
+        <h3 style="margin: 0;">Crop Selection</h3>
+      </div>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">
+        Match suitable crops to local soil types, rainfall patterns, water availability, and climatic seasons.
+      </p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--secondary-green);">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="background: var(--pale-green-bg); color: var(--secondary-green); font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">2</span>
+        <h3 style="margin: 0;">Scientific Cultivation</h3>
+      </div>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">
+        Learn seed priming, bed preparation, spacing methods, efficient irrigation (AWD, drip), and nutrient management.
+      </p>
+    </div>
+    <div class="card" style="border-top: 4px solid var(--sage-green);">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="background: var(--pale-green-bg); color: var(--sage-green); font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">3</span>
+        <h3 style="margin: 0;">Ecological Protection</h3>
+      </div>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">
+        Identify symptoms early, understand contributing weather conditions, and deploy Integrated Pest Management (IPM).
+      </p>
+    </div>
+    <div class="card" style="border-top: 4px solid #A86412;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="background: #FEF3C7; color: #A86412; font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">4</span>
+        <h3 style="margin: 0;">Precision Harvesting</h3>
+      </div>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">
+        Detect physiological maturity indicators, avoid shatter loss, and harvest at optimal moisture for long-term storage.
+      </p>
+    </div>
+    <div class="card" style="border-top: 4px solid #2563EB;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="background: #EFF6FF; color: #2563EB; font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">5</span>
+        <h3 style="margin: 0;">Post-Harvest Handling</h3>
+      </div>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">
+        Execute air-screening, grading, hermetic storage, and pest prevention without chemical contamination.
+      </p>
+    </div>
+    <div class="card" style="border-top: 4px solid #059669;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="background: #ECFDF5; color: #059669; font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">6</span>
+        <h3 style="margin: 0;">Value Addition</h3>
+      </div>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">
+        Transform raw farm harvests into shelf-stable flours, chips, oils, jaggery, fiber byproducts, and health mixes.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Crops From Database -->
+<section style="margin-bottom: 40px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+    <div>
+      <h2>Featured Crops in the System</h2>
+      <p class="text-muted" style="margin: 0;">Explore {{ total_crops_count }} detailed crops equipped with guides, pests, and quizzes.</p>
+    </div>
+    <a href="{{ url_for('crops.library') }}" class="btn btn-secondary btn-sm">{{ t('btn_explore_crops') }} &rarr;</a>
+  </div>
+
+  <div class="grid grid-3">
+    {% for crop in featured_crops %}
+      <article class="crop-card">
+        <img src="{{ crop.image_path }}" alt="{{ crop.name }}" class="crop-card-img" loading="lazy">
+        <div class="crop-card-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+            <h3 class="crop-card-title">{{ crop.name }}</h3>
+            <span class="badge badge-category">{{ crop.category }}</span>
+          </div>
+          <div class="crop-card-sci">{{ crop.scientific_name }}</div>
+          <p class="text-muted" style="font-size: 14px; line-height: 1.5; margin-bottom: 16px; flex: 1;">
+            {{ crop.description[:120] }}...
+          </p>
+          <div style="font-size: 13px; color: var(--secondary-text); margin-bottom: 16px;">
+            <div><strong>Water Need:</strong> {{ crop.water_requirement }}</div>
+            <div><strong>Difficulty:</strong> {{ crop.difficulty_level }}</div>
+          </div>
+          <a href="{{ url_for('crops.detail', slug=crop.slug) }}" class="btn btn-primary btn-sm" style="width: 100%;">
+            {{ t('btn_view_details') }} &rarr;
+          </a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

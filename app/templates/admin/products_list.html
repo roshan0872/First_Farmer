@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Value-Added Products &mdash; Admin{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs">
+  <a href="{{ url_for('admin.index') }}">Admin Dashboard</a>
+  <span>&rsaquo;</span>
+  <span>Value-Added Products</span>
+</nav>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+  <div>
+    <h1>Value-Added Products Catalog</h1>
+    <p class="text-muted" style="margin: 0;">Manage commercial and educational agro-processing products.</p>
+  </div>
+  <a href="{{ url_for('admin.product_create') }}" class="btn btn-primary btn-sm">+ Add Product</a>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead style="background: var(--pale-green-bg); border-bottom: 1px solid var(--border-color);">
+        <tr>
+          <th style="padding: 12px 16px;">Product Name</th>
+          <th style="padding: 12px 16px;">Source Crop</th>
+          <th style="padding: 12px 16px;">Category</th>
+          <th style="padding: 12px 16px;">Raw Material</th>
+          <th style="padding: 12px 16px; text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pr in products %}
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 12px 16px;"><strong>{{ pr.product_name }}</strong></td>
+            <td style="padding: 12px 16px;">{{ pr.crop.name }}</td>
+            <td style="padding: 12px 16px;"><span class="badge badge-category">{{ pr.product_category }}</span></td>
+            <td style="padding: 12px 16px; font-size: 13px; color: var(--secondary-text);">{{ pr.raw_material }}</td>
+            <td style="padding: 12px 16px; text-align: right;">
+              <div style="display: inline-flex; gap: 8px;">
+                <a href="{{ url_for('admin.product_edit', id=pr.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+                <form method="POST" action="{{ url_for('admin.product_delete', id=pr.id) }}" style="display: inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn btn-danger btn-sm" data-confirm="Delete product '{{ pr.product_name }}'?">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

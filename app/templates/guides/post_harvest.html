@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_post_harvest') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_post_harvest') }}</h1>
+  <p class="text-muted" style="margin: 0;">
+    Discover the critical bridge from agricultural harvesting to culinary products, industrial raw materials, and secondary byproducts.
+  </p>
+</div>
+
+<!-- Educational Disclaimer on Commercial Advice -->
+<div class="alert alert-info" style="margin-bottom: 24px;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+  <div>
+    <strong>Educational &amp; Processing Concepts:</strong>
+    Product concepts and processing workflows are presented for learning and exploration. They do not constitute guaranteed financial business advice or commercial feasibility plans.
+  </div>
+</div>
+
+<!-- Crop Selector -->
+<div class="card" style="margin-bottom: 28px; padding: 18px;">
+  <form method="GET" action="{{ url_for('guides.post_harvest') }}" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <label for="crop-select" style="font-weight: 600; font-size: 14px;">Select Crop:</label>
+    <select name="crop" id="crop-select" class="form-control" style="max-width: 280px;" onchange="this.form.submit()">
+      {% for c in crops %}
+        <option value="{{ c.slug }}" {{ 'selected' if selected_crop and selected_crop.id == c.id }}>
+          {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label for="cat-select" style="font-weight: 600; font-size: 14px; margin-left: 12px;">Filter Products:</label>
+    <select name="category" id="cat-select" class="form-control" style="max-width: 220px;" onchange="this.form.submit()">
+      <option value="">All Categories</option>
+      <option value="Food Product" {{ 'selected' if category == 'Food Product' }}>Food Products</option>
+      <option value="Industrial Product" {{ 'selected' if category == 'Industrial Product' }}>Industrial Products</option>
+      <option value="By-Product" {{ 'selected' if category == 'By-Product' }}>By-Products &amp; Feeds</option>
+    </select>
+  </form>
+</div>
+
+{% if selected_crop and selected_crop.post_harvest_guide %}
+  {% set phg = selected_crop.post_harvest_guide %}
+  <!-- Post-Harvest Operations Grid -->
+  <div class="card" style="margin-bottom: 28px;">
+    <div class="card-header">
+      <h2 class="card-title" style="font-size: 18px; margin: 0;">Post-Harvest Operations for {{ selected_crop.name }}</h2>
+      <a href="{{ url_for('crops.detail', slug=selected_crop.slug) }}" class="btn btn-secondary btn-sm">Full Profile &rarr;</a>
+    </div>
+
+    <div class="grid grid-2" style="font-size: 14px; line-height: 1.6;">
+      <div style="background: var(--main-page-bg); padding: 14px; border-radius: var(--radius-md);">
+        <strong style="color: var(--primary-forest);">Cleaning &amp; Grading:</strong>
+        <p style="margin: 4px 0 0;">{{ phg.cleaning_and_grading }}</p>
+      </div>
+
+      <div style="background: var(--main-page-bg); padding: 14px; border-radius: var(--radius-md);">
+        <strong style="color: var(--primary-forest);">Storage Protocols:</strong>
+        <p style="margin: 4px 0 0;">{{ phg.storage_method }}</p>
+      </div>
+
+      <div style="background: var(--main-page-bg); padding: 14px; border-radius: var(--radius-md);">
+        <strong style="color: var(--primary-forest);">Preservation Techniques:</strong>
+        <p style="margin: 4px 0 0;">{{ phg.preservation_method }}</p>
+      </div>
+
+      <div style="background: var(--main-page-bg); padding: 14px; border-radius: var(--radius-md);">
+        <strong style="color: var(--primary-forest);">Processing Methodology:</strong>
+        <p style="margin: 4px 0 0;">{{ phg.processing_method }}</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+      <div><strong>Food Uses:</strong> {{ phg.food_uses }}</div>
+      <div><strong>Industrial Uses:</strong> {{ phg.industrial_uses }}</div>
+      <div><strong>By-Products &amp; Residuals:</strong> {{ phg.by_products }}</div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Value-Added Products Catalog -->
+<h2 style="font-size: 20px; margin-bottom: 18px;">
+  Value-Added Products for {{ selected_crop.name if selected_crop else 'All Crops' }}
+</h2>
+
+{% if products %}
+  <div class="grid grid-2">
+    {% for p in products %}
+      <article class="card" style="border-top: 4px solid var(--primary-forest); display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+          <div>
+            <h3 style="font-size: 18px; margin: 0; color: var(--primary-forest);">{{ p.product_name }}</h3>
+            <div style="font-size: 13px; color: var(--secondary-text);">Raw Material: <strong>{{ p.raw_material }}</strong></div>
+          </div>
+          <span class="badge badge-category">{{ p.product_category }}</span>
+        </div>
+
+        <div style="margin-bottom: 12px; font-size: 14px;">
+          <strong>Processing Overview:</strong>
+          <p style="margin: 4px 0 0; line-height: 1.5; color: var(--primary-text);">{{ p.processing_overview }}</p>
+        </div>
+
+        <div style="margin-bottom: 12px; font-size: 13px; background: var(--pale-green-bg); padding: 10px; border-radius: var(--radius-sm);">
+          <strong>Common Commercial Uses:</strong>
+          <div style="margin-top: 2px;">{{ p.common_uses }}</div>
+        </div>
+
+        <div style="margin-bottom: 14px; font-size: 13px;">
+          <strong>Storage &amp; Shelf Life Considerations:</strong>
+          <div style="margin-top: 2px; color: var(--secondary-text);">{{ p.storage_considerations }}</div>
+        </div>
+
+        <div style="margin-top: auto; padding: 12px; background: #F0FDF4; border-radius: var(--radius-sm); border: 1px solid #BBF7D0; font-size: 13px;">
+          <strong style="color: var(--secondary-green);">Value Addition Impact:</strong>
+          <div style="margin-top: 2px; color: #14532D; font-weight: 500;">{{ p.value_addition_notes }}</div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card" style="text-align: center; padding: 36px;">
+    <p class="text-muted">No products found for the selected category filter.</p>
+  </div>
+{% endif %}
+{% endblock %}

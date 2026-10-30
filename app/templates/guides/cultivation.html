@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_cultivation') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_cultivation') }}</h1>
+  <p class="text-muted" style="margin: 0;">
+    Select any crop to view step-by-step agronomic practices from seed selection to growth stages.
+  </p>
+</div>
+
+<!-- Crop Selector Bar -->
+<div class="card" style="margin-bottom: 28px; padding: 18px;">
+  <form method="GET" action="{{ url_for('guides.cultivation') }}" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <label for="crop-select" style="font-weight: 600; font-size: 14px;">Select Crop Guide:</label>
+    <select name="crop" id="crop-select" class="form-control" style="max-width: 320px;" onchange="this.form.submit()">
+      {% for c in crops %}
+        <option value="{{ c.slug }}" {{ 'selected' if selected_crop and selected_crop.id == c.id }}>
+          {{ c.name }} ({{ c.category }})
+        </option>
+      {% endfor %}
+    </select>
+    <noscript><button type="submit" class="btn btn-primary btn-sm">Load Guide</button></noscript>
+  </form>
+</div>
+
+{% if selected_crop and selected_crop.cultivation_guide %}
+  {% set cg = selected_crop.cultivation_guide %}
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Cultivation Guide for {{ selected_crop.name }}</h2>
+    <a href="{{ url_for('crops.detail', slug=selected_crop.slug) }}" class="btn btn-secondary btn-sm">
+      Open Full Crop Profile &rarr;
+    </a>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom: 24px;">
+    <div class="card">
+      <h3 style="color: var(--primary-forest);">1. Seed Selection &amp; Bio-Priming</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.seed_selection }}</p>
+    </div>
+
+    <div class="card">
+      <h3 style="color: var(--primary-forest);">2. Land Preparation &amp; Tillage</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.land_preparation }}</p>
+    </div>
+
+    <div class="card">
+      <h3 style="color: var(--primary-forest);">3. Sowing Method &amp; Geometry</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.sowing_method }}</p>
+    </div>
+
+    <div class="card">
+      <h3 style="color: var(--primary-forest);">4. Irrigation Protocol</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.irrigation }}</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--secondary-green);">
+      <h3 style="color: var(--secondary-green);">5. Integrated Nutrient Management</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin-bottom: 10px;">{{ cg.nutrient_management }}</p>
+      <div style="font-size: 12px; color: var(--secondary-text); background: var(--pale-green-bg); padding: 8px 12px; border-radius: var(--radius-sm);">
+        <em>Fertilizer dosage is not universal; base applications on local soil test results and extension guidance.</em>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="color: var(--primary-forest);">6. Weed Management</h3>
+      <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.weed_management }}</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 24px;">
+    <h3 style="color: var(--primary-forest); margin-bottom: 8px;">Phenological Growth Stages</h3>
+    <div style="background: var(--pale-green-bg); padding: 14px 18px; border-radius: var(--radius-md); font-size: 14px; line-height: 1.6;">
+      {{ cg.growth_stages }}
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 4px solid var(--warning); margin-bottom: 24px;">
+    <h3 style="color: var(--warning); margin-bottom: 8px;">Common Beginner Mistakes</h3>
+    <p style="font-size: 14px; line-height: 1.6; margin: 0;">{{ cg.common_mistakes }}</p>
+  </div>
+
+  <div style="font-size: 12px; color: var(--secondary-text); padding: 8px;">
+    <strong>Source:</strong> {{ cg.source_reference }} &bull; <em>Reviewed: {{ cg.last_reviewed_at }}</em>
+  </div>
+
+{% else %}
+  <div class="card"><p class="text-muted">Select a crop from the dropdown above to view its cultivation guide.</p></div>
+{% endif %}
+{% endblock %}

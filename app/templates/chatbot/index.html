@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('chat_title') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px;">
+  <div>
+    <h1>{{ t('chat_title') }}</h1>
+    <p class="text-muted" style="margin: 0;">{{ t('chat_subtitle') }}</p>
+  </div>
+  {% if current_user and history %}
+    <form method="POST" action="{{ url_for('profile.clear_chat') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-secondary btn-sm" data-confirm="Are you sure you want to clear your conversation history?">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <span>{{ t('btn_clear_history') }}</span>
+      </button>
+    </form>
+  {% endif %}
+</div>
+
+<!-- Retrieval Mode Notice -->
+<div class="disclaimer-banner" style="margin-bottom: 20px;">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+  <div>
+    <strong>System Mode:</strong>
+    <span>{{ t('chat_retrieval_notice') }} Verified answers are linked directly to full crop and pest guide pages.</span>
+  </div>
+</div>
+
+<!-- Suggested Questions Pills -->
+<div style="margin-bottom: 18px;">
+  <span style="font-size: 13px; font-weight: 600; color: var(--secondary-text); margin-right: 8px;">Suggested topics:</span>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+    {% for q in suggested_questions %}
+      <button type="button" class="btn btn-secondary btn-sm suggested-prompt-btn" style="border-radius: 9999px; font-size: 12px; padding: 4px 12px; min-height: 32px;">
+        {{ q }}
+      </button>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Interactive Chat Window -->
+<div class="chat-window">
+  <div class="chat-messages" id="chat-messages">
+    <!-- Greeting Bubble -->
+    <div class="chat-bubble assistant">
+      Hello! I am your agricultural educational assistant. Ask me questions about crop selection, soil preparation, pest IPM, harvesting periods, or value-added processing ideas.
+    </div>
+
+    <!-- Persistent Conversation History -->
+    {% for msg in history %}
+      <div class="chat-bubble {{ msg.role }}">
+        {{ msg.message_text|replace('\n', '<br>')|safe }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <form id="chat-form" class="chat-input-bar">
+    <input type="text" id="chat-input" class="form-control" placeholder="{{ t('chat_placeholder') }}" autocomplete="off" required>
+    <button type="submit" id="chat-send-btn" class="btn btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      <span>Send</span>
+    </button>
+  </form>
+</div>
+
+<div style="margin-top: 12px; font-size: 12px; color: var(--secondary-text); text-align: center;">
+  Privacy Notice: Conversations are stored strictly for your session. Message texts are never shared with public third-party aggregators.
+</div>
+{% endblock %}

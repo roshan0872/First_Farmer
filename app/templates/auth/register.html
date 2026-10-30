@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('auth_register_title') }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 32px auto;">
+  <div class="card">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <h1 style="font-size: 24px; margin-bottom: 6px;">{{ t('auth_register_title') }}</h1>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">Join First Farmer to bookmark crops, take quizzes, and track your agricultural knowledge.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        <label class="form-label" for="full_name">{{ t('auth_full_name') }}</label>
+        {{ form.full_name(class="form-control", id="full_name", placeholder="e.g. Priya Sharma", autocomplete="name") }}
+        {% for err in form.full_name.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">{{ t('auth_email') }}</label>
+        {{ form.email(class="form-control", id="email", placeholder="you@example.com", autocomplete="email") }}
+        {% for err in form.email.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">{{ t('auth_password') }}</label>
+        {{ form.password(class="form-control", id="password", placeholder="Minimum 8 characters", autocomplete="new-password") }}
+        {% for err in form.password.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm_password">{{ t('auth_confirm_password') }}</label>
+        {{ form.confirm_password(class="form-control", id="confirm_password", placeholder="Repeat your password", autocomplete="new-password") }}
+        {% for err in form.confirm_password.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="preferred_language">{{ t('auth_pref_lang') }}</label>
+        {{ form.preferred_language(class="form-control", id="preferred_language") }}
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+        {{ t('nav_register') }}
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--secondary-text);">
+      {{ t('auth_have_account') }}
+      <a href="{{ url_for('auth.login') }}" style="color: var(--primary-forest); font-weight: 600;">{{ t('nav_login') }}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

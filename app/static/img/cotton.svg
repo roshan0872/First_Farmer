@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="100%" height="100%">
+  <rect width="200" height="150" fill="#F5F9F6" rx="8"/>
+  <line x1="100" y1="125" x2="100" y2="70" stroke="#7F5539" stroke-width="4" stroke-linecap="round"/>
+  <!-- Fluffy boll -->
+  <circle cx="85" cy="65" r="18" fill="#FFFFFF" stroke="#DCE5DC" stroke-width="1.5"/>
+  <circle cx="115" cy="65" r="18" fill="#FFFFFF" stroke="#DCE5DC" stroke-width="1.5"/>
+  <circle cx="100" cy="50" r="19" fill="#FFFFFF" stroke="#DCE5DC" stroke-width="1.5"/>
+  <circle cx="100" cy="75" r="16" fill="#FFFFFF" stroke="#DCE5DC" stroke-width="1.5"/>
+  <!-- Bracts -->
+  <path d="M80 82 Q100 95 100 75 Q100 95 120 82" stroke="#582F0E" stroke-width="3" fill="#7F5539"/>
+</svg>

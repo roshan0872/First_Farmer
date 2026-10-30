@@ -1,0 +1,107 @@
+<aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation">
+  <a href="{{ url_for('main.index') }}" class="sidebar-brand">
+    <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="First Farmer Logo" width="36" height="36">
+    <div>
+      <h1>First Farmer</h1>
+      <span style="font-size: 11px; color: var(--secondary-text);">Agriculture Learning</span>
+    </div>
+  </a>
+
+  <nav class="sidebar-nav">
+    <span class="nav-section-title">Core Learning</span>
+
+    <a href="{{ url_for('main.dashboard') }}" class="nav-link {{ 'active' if request.endpoint == 'main.dashboard' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>{{ t('nav_dashboard') }}</span>
+    </a>
+
+    <a href="{{ url_for('recommendations.recommend') }}" class="nav-link {{ 'active' if request.endpoint == 'recommendations.recommend' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      <span>{{ t('nav_recommendation') }}</span>
+    </a>
+
+    <a href="{{ url_for('crops.library') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('crops.') }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      <span>{{ t('nav_library') }}</span>
+    </a>
+
+    <span class="nav-section-title">Guides & Practice</span>
+
+    <a href="{{ url_for('guides.cultivation') }}" class="nav-link {{ 'active' if request.endpoint == 'guides.cultivation' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      <span>{{ t('nav_cultivation') }}</span>
+    </a>
+
+    <a href="{{ url_for('guides.pests_diseases') }}" class="nav-link {{ 'active' if request.endpoint == 'guides.pests_diseases' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4c0 .8.2 1.5.5 2.1L3.3 13.3c-.4.4-.4 1 0 1.4.4.4 1 .4 1.4 0l4.8-4.8c.6.3 1.3.5 2.1.5a4 4 0 0 0 4-4c0-.8-.2-1.5-.5-2.1l4.8-4.8c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0l-4.8 4.8c-.6-.3-1.3-.5-2.1-.5z"></path></svg>
+      <span>{{ t('nav_pests') }}</span>
+    </a>
+
+    <a href="{{ url_for('guides.harvest') }}" class="nav-link {{ 'active' if request.endpoint == 'guides.harvest' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>{{ t('nav_harvest') }}</span>
+    </a>
+
+    <a href="{{ url_for('guides.post_harvest') }}" class="nav-link {{ 'active' if request.endpoint == 'guides.post_harvest' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      <span>{{ t('nav_post_harvest') }}</span>
+    </a>
+
+    <span class="nav-section-title">Support & Tools</span>
+
+    <a href="{{ url_for('weather.index') }}" class="nav-link {{ 'active' if request.endpoint == 'weather.index' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+      <span>{{ t('nav_weather') }}</span>
+    </a>
+
+    <a href="{{ url_for('chatbot.index') }}" class="nav-link {{ 'active' if request.endpoint == 'chatbot.index' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span>{{ t('nav_chatbot') }}</span>
+    </a>
+
+    {% if current_user %}
+      <span class="nav-section-title">My Account</span>
+
+      <a href="{{ url_for('learning.progress') }}" class="nav-link {{ 'active' if request.endpoint == 'learning.progress' }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        <span>{{ t('nav_progress') }}</span>
+      </a>
+
+      <a href="{{ url_for('profile.index') }}" class="nav-link {{ 'active' if request.endpoint == 'profile.index' }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>{{ t('nav_profile') }}</span>
+      </a>
+
+      {% if current_user.is_admin %}
+        <span class="nav-section-title" style="color: #A86412;">Administrator</span>
+        <a href="{{ url_for('admin.index') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('admin.') }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>{{ t('nav_admin') }}</span>
+        </a>
+      {% endif %}
+
+      <a href="{{ url_for('auth.logout') }}" class="nav-link" style="color: var(--error);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <span>{{ t('nav_logout') }}</span>
+      </a>
+    {% else %}
+      <span class="nav-section-title">Join Us</span>
+      <a href="{{ url_for('auth.login') }}" class="nav-link {{ 'active' if request.endpoint == 'auth.login' }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+        <span>{{ t('nav_login') }}</span>
+      </a>
+      <a href="{{ url_for('auth.register') }}" class="nav-link {{ 'active' if request.endpoint == 'auth.register' }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        <span>{{ t('nav_register') }}</span>
+      </a>
+    {% endif %}
+  </nav>
+
+  <div class="sidebar-footer">
+    <div style="font-size: 11px; color: var(--secondary-text); line-height: 1.4;">
+      First Farmer System v1.0<br>
+      <span style="color: var(--secondary-green); font-weight: 600;">Educational & Assistive</span>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>

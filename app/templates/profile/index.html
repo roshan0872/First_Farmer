@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_profile') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_profile') }}</h1>
+  <p class="text-muted" style="margin: 0;">Manage your account credentials, regional language preferences, and personal data privacy.</p>
+</div>
+
+<div class="grid grid-2" style="margin-bottom: 32px;">
+  <!-- Profile & Language Settings -->
+  <div class="card">
+    <h2 class="card-title" style="font-size: 18px; margin-bottom: 16px;">Personal Information</h2>
+    <form method="POST" action="{{ url_for('profile.index') }}">
+      {{ profile_form.hidden_tag() }}
+
+      <div class="form-group">
+        <label class="form-label" for="full_name">Full Name</label>
+        {{ profile_form.full_name(class="form-control", id="full_name") }}
+        {% for err in profile_form.full_name.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="text" class="form-control" value="{{ user.email }}" disabled style="background: #F1F5F9; color: var(--secondary-text);">
+        <span class="form-hint">Email address cannot be changed once registered.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="preferred_language">{{ t('auth_pref_lang') }}</label>
+        {{ profile_form.preferred_language(class="form-control", id="preferred_language") }}
+      </div>
+
+      <div style="margin-bottom: 20px; font-size: 13px; color: var(--secondary-text);">
+        <div><strong>Account Role:</strong> <span class="badge badge-difficulty">{{ user.role|capitalize }}</span></div>
+        <div style="margin-top: 4px;"><strong>Member Since:</strong> {{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'Active' }}</div>
+      </div>
+
+      <button type="submit" name="submit_profile" class="btn btn-primary">
+        {{ t('btn_save') }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Security: Change Password -->
+  <div class="card">
+    <h2 class="card-title" style="font-size: 18px; margin-bottom: 16px;">Change Password</h2>
+    <form method="POST" action="{{ url_for('profile.change_password') }}">
+      {{ password_form.hidden_tag() }}
+
+      <div class="form-group">
+        <label class="form-label" for="current_password">{{ t('auth_current_password') }}</label>
+        {{ password_form.current_password(class="form-control", id="current_password") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="new_password">{{ t('auth_new_password') }}</label>
+        {{ password_form.new_password(class="form-control", id="new_password", placeholder="Minimum 8 characters") }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm_new_password">{{ t('auth_confirm_password') }}</label>
+        {{ password_form.confirm_new_password(class="form-control", id="confirm_new_password") }}
+      </div>
+
+      <button type="submit" class="btn btn-secondary">
+        Update Password Securely
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Privacy & Data Controls -->
+<div class="card">
+  <h2 class="card-title" style="font-size: 18px; margin-bottom: 16px;">Data Privacy &amp; History Controls</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <div style="font-weight: 600; color: var(--primary-forest);">Agriculture Chatbot History</div>
+      <div style="font-size: 13px; color: var(--secondary-text);">You currently have {{ chat_count }} conversation message records stored in your profile.</div>
+    </div>
+    {% if chat_count > 0 %}
+      <form method="POST" action="{{ url_for('profile.clear_chat') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-danger btn-sm" data-confirm="Are you sure you want to permanently erase your chatbot conversation history?">
+          {{ t('btn_clear_history') }}
+        </button>
+      </form>
+    {% else %}
+      <span style="font-size: 13px; color: var(--secondary-text);">No history to clear</span>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

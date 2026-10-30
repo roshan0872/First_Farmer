@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('auth_login_title') }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 40px auto;">
+  <div class="card">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <h1 style="font-size: 24px; margin-bottom: 6px;">{{ t('auth_login_title') }}</h1>
+      <p class="text-muted" style="font-size: 14px; margin: 0;">Access your saved crops, learning progress, and personal farm profile.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        <label class="form-label" for="email">{{ t('auth_email') }}</label>
+        {{ form.email(class="form-control", id="email", placeholder="you@example.com", autocomplete="email") }}
+        {% for err in form.email.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">{{ t('auth_password') }}</label>
+        {{ form.password(class="form-control", id="password", placeholder="Enter your password", autocomplete="current-password") }}
+        {% for err in form.password.errors %}
+          <div class="form-error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+        {{ form.remember_me(id="remember_me") }}
+        <label for="remember_me" style="font-size: 13px; color: var(--secondary-text); cursor: pointer;">Remember me on this browser</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+        {{ t('nav_login') }}
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--secondary-text);">
+      {{ t('auth_no_account') }}
+      <a href="{{ url_for('auth.register') }}" style="color: var(--primary-forest); font-weight: 600;">{{ t('nav_register') }}</a>
+    </div>
+
+    <!-- Development Demo Credentials Box -->
+    <div style="margin-top: 24px; padding: 14px; background: var(--pale-green-bg); border-radius: var(--radius-md); font-size: 12px; line-height: 1.5; color: var(--primary-forest);">
+      <strong>Demo Accounts (Development Only):</strong><br>
+      &bull; <strong>Student:</strong> <code>student@firstfarmer.org</code> / <code>StudentPass123!</code><br>
+      &bull; <strong>Admin:</strong> <code>admin@firstfarmer.org</code> / <code>AdminPass123!</code><br>
+      <em>Change or delete before deploying to production.</em>
+    </div>
+  </div>
+</div>
+{% endblock %}

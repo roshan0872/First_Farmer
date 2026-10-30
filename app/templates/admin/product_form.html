@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} &mdash; Admin{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs">
+  <a href="{{ url_for('admin.index') }}">Admin Dashboard</a>
+  <span>&rsaquo;</span>
+  <a href="{{ url_for('admin.products_list') }}">Products</a>
+  <span>&rsaquo;</span>
+  <span>{{ title }}</span>
+</nav>
+
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+  <h1 style="font-size: 24px; margin-bottom: 20px;">{{ title }}</h1>
+
+  <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="grid grid-2">
+      <div class="form-group">
+        <label class="form-label">Associated Crop *</label>
+        <select name="crop_id" class="form-control" required>
+          {% for c in crops %}
+            <option value="{{ c.id }}" {{ 'selected' if product and product.crop_id == c.id }}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Product Name *</label>
+        <input type="text" name="product_name" value="{{ product.product_name if product else '' }}" class="form-control" required placeholder="e.g. Crispy Banana Chips">
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="form-group">
+        <label class="form-label">Product Category *</label>
+        <select name="product_category" class="form-control" required>
+          <option value="Food Product" {{ 'selected' if product and product.product_category == 'Food Product' }}>Food Product</option>
+          <option value="Industrial Product" {{ 'selected' if product and product.product_category == 'Industrial Product' }}>Industrial Product</option>
+          <option value="By-Product" {{ 'selected' if product and product.product_category == 'By-Product' }}>By-Product &amp; Feed</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Raw Material Specifications *</label>
+        <input type="text" name="raw_material" value="{{ product.raw_material if product else '' }}" class="form-control" required placeholder="e.g. Mature green unripe Nendran bananas">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Processing Overview Workflow *</label>
+      <textarea name="processing_overview" class="form-control" rows="3" required placeholder="Outline key transformation stages (washing -> slicing -> frying -> packaging)...">{{ product.processing_overview if product else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Common Commercial Uses *</label>
+      <textarea name="common_uses" class="form-control" rows="2" required placeholder="Primary consumer or culinary applications...">{{ product.common_uses if product else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Storage &amp; Packaging Considerations *</label>
+      <textarea name="storage_considerations" class="form-control" rows="2" required placeholder="Moisture barrier, nitrogen flush, shelf life...">{{ product.storage_considerations if product else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Value Addition Impact Notes *</label>
+      <textarea name="value_addition_notes" class="form-control" rows="2" required placeholder="Educational notes on upgrading farm value...">{{ product.value_addition_notes if product else '' }}</textarea>
+    </div>
+
+    <div style="display: flex; gap: 12px; margin-top: 16px;">
+      <button type="submit" class="btn btn-primary">Save Product</button>
+      <a href="{{ url_for('admin.products_list') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150" width="100%" height="100%">
+  <rect width="200" height="150" fill="#F4F8F4" rx="8"/>
+  <rect x="92" y="30" width="16" height="28" rx="3" fill="#6E9F78" stroke="#1F5135" stroke-width="1.5"/>
+  <rect x="92" y="60" width="16" height="28" rx="3" fill="#52835C" stroke="#1F5135" stroke-width="1.5"/>
+  <rect x="92" y="90" width="16" height="30" rx="3" fill="#3D7048" stroke="#1F5135" stroke-width="1.5"/>
+  <!-- Leaves -->
+  <path d="M92 35 Q60 20 40 40" stroke="#2E7D4F" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M108 35 Q140 20 160 40" stroke="#2E7D4F" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

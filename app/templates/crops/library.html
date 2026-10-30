@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_library') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_library') }}</h1>
+  <p class="text-muted" style="margin: 0;">
+    Search, filter, and study agricultural crops. Bookmark items to your account and explore cultivation guidelines.
+  </p>
+</div>
+
+<!-- Search & Multi-Filter Bar -->
+<div class="card" style="margin-bottom: 28px; padding: 20px;">
+  <form method="GET" action="{{ url_for('crops.library') }}" style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- Search Input Row -->
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 240px;">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search by crop name, scientific name, or keyword..." class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>{{ t('btn_search') }}</span>
+      </button>
+      {% if search_query or selected_category or selected_soil or selected_season or selected_water %}
+        <a href="{{ url_for('crops.library') }}" class="btn btn-secondary">{{ t('btn_clear') }}</a>
+      {% endif %}
+    </div>
+
+    <!-- Filter Dropdowns Row -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+      <div>
+        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;">Category</label>
+        <select name="category" class="form-control" style="font-size: 13px; min-height: 38px;">
+          <option value="">All Categories</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}" {{ 'selected' if selected_category == cat }}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;">Soil Type</label>
+        <select name="soil" class="form-control" style="font-size: 13px; min-height: 38px;">
+          <option value="">All Soil Types</option>
+          {% for s in all_soils %}
+            <option value="{{ s.name }}" {{ 'selected' if selected_soil == s.name }}>{{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;">Season</label>
+        <select name="season" class="form-control" style="font-size: 13px; min-height: 38px;">
+          <option value="">All Seasons</option>
+          {% for sn in all_seasons %}
+            <option value="{{ sn.name }}" {{ 'selected' if selected_season == sn.name }}>{{ sn.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;">Water Need</label>
+        <select name="water" class="form-control" style="font-size: 13px; min-height: 38px;">
+          <option value="">Any Water Need</option>
+          <option value="Low" {{ 'selected' if selected_water == 'Low' }}>Low (Dryland / Drought-hardy)</option>
+          <option value="Medium" {{ 'selected' if selected_water == 'Medium' }}>Medium (Moderate irrigation)</option>
+          <option value="High" {{ 'selected' if selected_water == 'High' }}>High (Wetland / Continuous)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;">Sort Order</label>
+        <select name="sort" class="form-control" style="font-size: 13px; min-height: 38px;">
+          <option value="az" {{ 'selected' if sort_order == 'az' }}>Name: A &rarr; Z</option>
+          <option value="za" {{ 'selected' if sort_order == 'za' }}>Name: Z &rarr; A</option>
+        </select>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Crops Grid -->
+{% if crops %}
+  <div class="grid grid-3" style="margin-bottom: 32px;">
+    {% for crop in crops %}
+      <article class="crop-card">
+        <img src="{{ crop.image_path }}" alt="{{ crop.name }}" class="crop-card-img" loading="lazy">
+        <div class="crop-card-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+            <h2 class="crop-card-title">{{ crop.name }}</h2>
+            <span class="badge badge-category">{{ crop.category }}</span>
+          </div>
+          <div class="crop-card-sci">{{ crop.scientific_name }}</div>
+          
+          <p class="text-muted" style="font-size: 14px; line-height: 1.5; margin-bottom: 14px; flex: 1;">
+            {{ crop.description[:110] }}...
+          </p>
+
+          <div style="background: var(--main-page-bg); border-radius: var(--radius-sm); padding: 10px; font-size: 12px; margin-bottom: 14px; line-height: 1.6;">
+            <div><strong>Water Requirement:</strong> {{ crop.water_requirement }}</div>
+            <div><strong>Seasons:</strong> {{ crop.season_summary or 'Multi-season' }}</div>
+            <div><strong>Difficulty:</strong> <span class="badge badge-difficulty" style="font-size: 11px;">{{ crop.difficulty_level }}</span></div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: auto;">
+            <a href="{{ url_for('crops.detail', slug=crop.slug) }}" class="btn btn-primary btn-sm" style="flex: 1;">
+              {{ t('btn_view_details') }} &rarr;
+            </a>
+
+            {% if current_user %}
+              <form method="POST" action="{{ url_for('learning.toggle_bookmark', crop_id=crop.id) }}" class="bookmark-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-secondary btn-sm bookmark-btn {{ 'active' if crop.id in bookmarked_ids }}" aria-label="Bookmark {{ crop.name }}" aria-pressed="{{ 'true' if crop.id in bookmarked_ids else 'false' }}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="{{ '#1F5135' if crop.id in bookmarked_ids else 'none' }}" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path></svg>
+                  <span class="btn-label">{{ t('btn_bookmarked') if crop.id in bookmarked_ids else t('btn_bookmark') }}</span>
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if pagination.pages > 1 %}
+    <div style="display: flex; justify-content: center; gap: 8px; margin-top: 24px;">
+      {% if pagination.has_prev %}
+        <a href="{{ url_for('crops.library', page=pagination.prev_num, q=search_query, category=selected_category, soil=selected_soil, season=selected_season, water=selected_water, sort=sort_order) }}" class="btn btn-secondary btn-sm">&larr; Previous</a>
+      {% endif %}
+      
+      <span style="display: inline-flex; align-items: center; padding: 0 14px; font-size: 13px; color: var(--secondary-text);">
+        Page {{ pagination.page }} of {{ pagination.pages }}
+      </span>
+
+      {% if pagination.has_next %}
+        <a href="{{ url_for('crops.library', page=pagination.next_num, q=search_query, category=selected_category, soil=selected_soil, season=selected_season, water=selected_water, sort=sort_order) }}" class="btn btn-secondary btn-sm">Next &rarr;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+{% else %}
+  <!-- Empty State -->
+  <div class="card" style="text-align: center; padding: 48px 24px;">
+    <div style="font-size: 40px; margin-bottom: 12px;">🌱</div>
+    <h3>No crops match your filter criteria</h3>
+    <p class="text-muted" style="max-width: 480px; margin: 0 auto 20px;">
+      Try broadening your search terms or clearing specific soil or season filters to view available crops.
+    </p>
+    <a href="{{ url_for('crops.library') }}" class="btn btn-primary">{{ t('btn_clear') }} Filters</a>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ t('app_name') }}{% endblock %} &mdash; {{ t('app_tagline') }}</title>
+  
+  <!-- Fallback Fonts for Latin, Tamil, and Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  
+  <!-- Vendored Chart.js (Strictly local, no CDN dependency) -->
+  <script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+  
+  <!-- CSRF Token Meta Tag for JS calls -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    {% include "partials/nav.html" %}
+
+    <!-- Main Content Stream -->
+    <div class="app-main">
+      {% include "partials/header.html" %}
+
+      <main class="page-body" id="main-content">
+        {% include "partials/alerts.html" %}
+        {% include "partials/disclaimer.html" %}
+
+        {% block content %}{% endblock %}
+      </main>
+
+      {% include "partials/footer.html" %}
+    </div>
+  </div>
+
+  <!-- Client-side Vanilla JavaScript Modules -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_progress') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_progress') }}</h1>
+  <p class="text-muted" style="margin: 0;">
+    Track your completed learning modules, review saved crops, and view your quiz performance records.
+  </p>
+</div>
+
+<!-- Progress Overview Card -->
+<div class="card" style="margin-bottom: 28px; padding: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+    <div>
+      <h2 style="font-size: 18px; margin: 0; color: var(--primary-forest);">Overall Curriculum Completion</h2>
+      <div style="font-size: 13px; color: var(--secondary-text);">{{ completed_module_ids|length }} of {{ all_modules|length }} foundational crop modules completed</div>
+    </div>
+    <div style="font-size: 28px; font-weight: 700; color: var(--primary-forest);">{{ completion_percentage }}%</div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div style="height: 12px; background: var(--pale-green-bg); border-radius: 9999px; overflow: hidden; border: 1px solid var(--border-color);">
+    <div style="height: 100%; width: {{ completion_percentage }}%; background: var(--primary-forest); transition: width 0.3s ease;"></div>
+  </div>
+</div>
+
+<!-- Saved Crops (Bookmarks) Section -->
+<div style="margin-bottom: 32px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <h2>My Bookmarked Crops ({{ saved_crops|length }})</h2>
+    <a href="{{ url_for('crops.library') }}" class="btn btn-secondary btn-sm">Explore More &rarr;</a>
+  </div>
+
+  {% if saved_crops %}
+    <div class="grid grid-3">
+      {% for crop in saved_crops %}
+        <article class="crop-card">
+          <img src="{{ crop.image_path }}" alt="{{ crop.name }}" class="crop-card-img" loading="lazy">
+          <div class="crop-card-body">
+            <h3 class="crop-card-title">{{ crop.name }}</h3>
+            <div class="crop-card-sci">{{ crop.scientific_name }}</div>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="{{ url_for('crops.detail', slug=crop.slug) }}" class="btn btn-primary btn-sm" style="flex: 1;">
+                Study Guide
+              </a>
+              <form method="POST" action="{{ url_for('learning.toggle_bookmark', crop_id=crop.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-secondary btn-sm" title="Remove bookmark">
+                  &times;
+                </button>
+              </form>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card" style="padding: 24px; text-align: center; background: #FAFBF9;">
+      <p class="text-muted" style="margin-bottom: 12px;">You haven't bookmarked any crops yet.</p>
+      <a href="{{ url_for('crops.library') }}" class="btn btn-primary btn-sm">Browse Crop Library to Bookmark</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Recommended Next Topics -->
+{% if recommended_modules %}
+  <div style="margin-bottom: 32px;">
+    <h2 style="margin-bottom: 16px;">Recommended Next Modules</h2>
+    <div class="grid grid-3">
+      {% for mod in recommended_modules %}
+        <div class="card" style="border-left: 4px solid var(--secondary-green); display: flex; flex-direction: column;">
+          <h3 style="font-size: 16px; margin-bottom: 6px; color: var(--primary-forest);">{{ mod.title }}</h3>
+          <p class="text-muted" style="font-size: 13px; margin-bottom: 14px; flex: 1;">{{ mod.content_summary }}</p>
+          <a href="{{ url_for('crops.detail', slug=mod.crop.slug if mod.crop else 'rice-paddy') }}" class="btn btn-secondary btn-sm" style="margin-top: auto;">
+            Start Module &rarr;
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<!-- Quiz Performance History -->
+<div class="card">
+  <h2 class="card-title" style="font-size: 18px; margin-bottom: 16px;">Quiz Attempt History</h2>
+  {% if quiz_attempts %}
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      {% for att in quiz_attempts %}
+        <div style="padding: 12px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <strong style="color: var(--primary-forest);">{{ att.crop.name }} Knowledge Assessment</strong>
+            <div style="font-size: 12px; color: var(--secondary-text);">Completed on {{ att.completed_at.strftime('%Y-%m-%d at %H:%M UTC') }}</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="badge {{ 'badge-strong' if att.score == att.total_questions else ('badge-moderate' if att.score > 0 else 'badge-weak') }}">
+              {{ att.score }} / {{ att.total_questions }} Correct ({{ (att.score / att.total_questions * 100)|round|int }}%)
+            </span>
+            <a href="{{ url_for('learning.quiz', slug=att.crop.slug) }}" class="btn btn-secondary btn-sm">Retake</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted" style="margin: 0;">No quiz attempts logged. Take a quiz from any crop page to test your knowledge.</p>
+  {% endif %}
+</div>
+{% endblock %}

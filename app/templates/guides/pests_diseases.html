@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('nav_pests') }} &mdash; {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+  <h1>{{ t('nav_pests') }}</h1>
+  <p class="text-muted" style="margin: 0;">
+    Ecological diagnosis, prevention, and Integrated Pest Management (IPM). Prioritize cultural, biological, and physical controls over hazardous synthetic chemicals.
+  </p>
+</div>
+
+<!-- Special Advisory Banner -->
+<div class="alert alert-warning" style="margin-bottom: 24px;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+  <div>
+    <strong>Educational Guidance, Not Confirmed Diagnosis:</strong>
+    These entries describe common symptom patterns and verified non-hazardous IPM practices. For severe field infestations or ambiguous symptoms, always obtain in-person confirmation from your district Agricultural Extension Officer or KVK plant pathologist.
+  </div>
+</div>
+
+<!-- Search & Filter Controls -->
+<div class="card" style="margin-bottom: 28px; padding: 18px;">
+  <form method="GET" action="{{ url_for('guides.pests_diseases') }}" style="display: flex; gap: 12px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 220px;">
+      <input type="text" name="q" value="{{ search }}" placeholder="Search by pest name, symptoms, or control method..." class="form-control">
+    </div>
+
+    <div style="min-width: 180px;">
+      <select name="crop" class="form-control" onchange="this.form.submit()">
+        <option value="">All Crops</option>
+        {% for c in crops %}
+          <option value="{{ c.id }}" {{ 'selected' if selected_crop_id == c.id }}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="min-width: 140px;">
+      <select name="type" class="form-control" onchange="this.form.submit()">
+        <option value="">All Types</option>
+        <option value="pest" {{ 'selected' if selected_type == 'pest' }}>Insects &amp; Pests</option>
+        <option value="disease" {{ 'selected' if selected_type == 'disease' }}>Fungal &amp; Viral Diseases</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-sm">{{ t('btn_filter') }}</button>
+    {% if search or selected_crop_id or selected_type %}
+      <a href="{{ url_for('guides.pests_diseases') }}" class="btn btn-secondary btn-sm">{{ t('btn_clear') }}</a>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Records Display -->
+{% if records %}
+  <div class="grid grid-2">
+    {% for pd in records %}
+      <article class="card" style="border-top: 4px solid {{ 'var(--warning)' if pd.type == 'pest' else 'var(--error)' }}; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+          <div>
+            <h3 style="font-size: 18px; margin: 0; color: var(--primary-forest);">{{ pd.name }}</h3>
+            <div style="font-size: 13px; color: var(--secondary-text);">Affects: <strong>{{ pd.crop.name }}</strong></div>
+          </div>
+          <span class="badge {{ 'badge-moderate' if pd.type == 'pest' else 'badge-weak' }}">{{ pd.type }}</span>
+        </div>
+
+        <div style="margin-bottom: 12px; font-size: 14px;">
+          <strong style="color: #991B1B;">Diagnostic Symptoms:</strong>
+          <p style="margin: 4px 0 0; color: var(--primary-text); line-height: 1.5;">{{ pd.symptoms }}</p>
+        </div>
+
+        <div style="margin-bottom: 12px; font-size: 13px; background: #FFFBEB; padding: 10px; border-radius: var(--radius-sm);">
+          <strong style="color: #92400E;">Contributing Conditions:</strong>
+          <div style="margin-top: 2px;">{{ pd.contributing_conditions }}</div>
+        </div>
+
+        <div style="margin-bottom: 12px; font-size: 13px; background: #F0FDF4; padding: 10px; border-radius: var(--radius-sm); border-left: 3px solid var(--secondary-green);">
+          <strong style="color: #166534;">Ecological Prevention:</strong>
+          <div style="margin-top: 2px;">{{ pd.prevention }}</div>
+        </div>
+
+        <div style="margin-bottom: 16px; font-size: 13px;">
+          <strong style="color: var(--primary-forest);">IPM Management Protocol:</strong>
+          <div style="margin-top: 2px; line-height: 1.5;">{{ pd.management }}</div>
+        </div>
+
+        <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--secondary-text);">
+          <span>Source: {{ pd.source_reference }}</span>
+          <a href="{{ url_for('crops.detail', slug=pd.crop.slug) }}" style="color: var(--primary-forest); font-weight: 600;">{{ pd.crop.name }} Details &rarr;</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card" style="text-align: center; padding: 48px 24px;">
+    <h3>No pest or disease records found</h3>
+    <p class="text-muted" style="margin-bottom: 16px;">Try adjusting your search keywords or resetting filters.</p>
+    <a href="{{ url_for('guides.pests_diseases') }}" class="btn btn-secondary btn-sm">Clear Filters</a>
+  </div>
+{% endif %}
+{% endblock %}

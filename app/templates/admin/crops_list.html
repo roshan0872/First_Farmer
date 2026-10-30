@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Crops &mdash; Admin{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs">
+  <a href="{{ url_for('admin.index') }}">Admin Dashboard</a>
+  <span>&rsaquo;</span>
+  <span>Crops Management</span>
+</nav>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+  <div>
+    <h1>Crop Records Management</h1>
+    <p class="text-muted" style="margin: 0;">Create, modify, and delete agricultural crop entities.</p>
+  </div>
+  <a href="{{ url_for('admin.crop_create') }}" class="btn btn-primary btn-sm">+ Add New Crop</a>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead style="background: var(--pale-green-bg); border-bottom: 1px solid var(--border-color);">
+        <tr>
+          <th style="padding: 12px 16px;">Name &amp; Slug</th>
+          <th style="padding: 12px 16px;">Category</th>
+          <th style="padding: 12px 16px;">Water Need</th>
+          <th style="padding: 12px 16px;">Status</th>
+          <th style="padding: 12px 16px; text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for crop in crops %}
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 12px 16px;">
+              <strong>{{ crop.name }}</strong>
+              <div style="font-size: 12px; color: var(--secondary-text);">/crops/{{ crop.slug }}</div>
+            </td>
+            <td style="padding: 12px 16px;"><span class="badge badge-category">{{ crop.category }}</span></td>
+            <td style="padding: 12px 16px;">{{ crop.water_requirement }}</td>
+            <td style="padding: 12px 16px;">
+              {% if crop.is_published %}
+                <span class="badge badge-strong">Published</span>
+              {% else %}
+                <span class="badge badge-weak">Draft</span>
+              {% endif %}
+            </td>
+            <td style="padding: 12px 16px; text-align: right;">
+              <div style="display: inline-flex; gap: 8px;">
+                <a href="{{ url_for('admin.crop_edit', id=crop.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="{{ url_for('admin.guides_edit', id=crop.id) }}" class="btn btn-secondary btn-sm">Guides</a>
+                <form method="POST" action="{{ url_for('admin.crop_delete', id=crop.id) }}" style="display: inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn btn-danger btn-sm" data-confirm="Are you sure you want to permanently delete '{{ crop.name }}'? All attached guides and products will be removed.">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
