@@ -126,3 +126,4 @@ def create_app(config_name: str | None = None) -> Flask:
         return render_template("errors/500.html"), 500
 
     return app
+

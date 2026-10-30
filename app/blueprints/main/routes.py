@@ -99,3 +99,4 @@ def set_language(lang):
     resp = redirect(next_url)
     resp.set_cookie("pref_lang", lang, max_age=86400 * 365, samesite="Lax")
     return resp
+

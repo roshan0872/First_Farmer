@@ -221,3 +221,4 @@ function initChatbot() {
     return div.innerHTML;
   }
 }
+

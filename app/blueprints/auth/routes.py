@@ -84,3 +84,4 @@ def logout():
     session.clear()
     flash("You have been logged out securely.", "info")
     return redirect(url_for("main.index"))
+

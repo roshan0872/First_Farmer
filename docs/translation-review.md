@@ -50,3 +50,4 @@ Translators and native reviewers should verify:
 1. Agronomic terminology naturalness (e.g., ensuring "Transplanting" in Tamil uses traditional term *நடவு* rather than literal translation).
 2. Devanagari conjunct rendering and diacritic clarity.
 3. Formatting consistency across responsive mobile screen widths.
+

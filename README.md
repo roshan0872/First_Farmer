@@ -188,3 +188,4 @@ git push origin main
 ## 8. License & Agronomic Disclaimer
 
 This platform is developed for educational and assistive purposes under the MIT License. Agricultural recommendations represent baseline scientific guidance and must never replace localized field soil tests and advice from local certified agricultural extension officers.
+

@@ -82,3 +82,4 @@ def get_entity_translation(entity_type: str, entity_id: int, field_name: str, la
         return tr.translated_content, True
 
     return None, False
+

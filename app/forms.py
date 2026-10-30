@@ -117,3 +117,4 @@ class AdminCropForm(FlaskForm):
     difficulty_level = SelectField("Difficulty Level", choices=[("Beginner", "Beginner"), ("Intermediate", "Intermediate"), ("Advanced", "Advanced")], default="Beginner")
     is_published = BooleanField("Published", default=True)
     submit = SubmitField("Save Crop")
+

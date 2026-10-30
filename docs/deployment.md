@@ -89,3 +89,4 @@ git push -u origin main
 4. **Crop Library**: Visit `/crops`, search for "Rice", and open its cultivation guide.
 5. **Chatbot**: Submit a question at `/chatbot` and ensure verified retrieval answers are returned.
 6. **Admin Area**: Log in as your newly created administrator and confirm access to `/admin`.
+

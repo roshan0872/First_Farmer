@@ -169,3 +169,4 @@ class CropProduct(db.Model):
     value_addition_notes = db.Column(db.Text, nullable=False)
 
     crop = db.relationship("Crop", back_populates="products")
+

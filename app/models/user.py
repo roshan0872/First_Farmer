@@ -60,3 +60,4 @@ class ActivityLog(db.Model):
     entity_type = db.Column(db.String(80), nullable=False)
     entity_id = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), default=utc_now, nullable=False)
+

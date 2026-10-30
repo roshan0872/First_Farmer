@@ -102,3 +102,4 @@ The schema is designed using normalized relational principles, portable SQL data
 - `quiz_attempts`: `id`, `user_id`, `crop_id`, `score`, `total_questions`, `completed_at`
 - `chat_messages`: `id`, `user_id`, `conversation_id`, `role`, `message_text`, `created_at`
 - `translations`: `id`, `entity_type`, `entity_id`, `field_name`, `language_code`, `translated_title`, `translated_content`, UNIQUE(entity_type, entity_id, field_name, language_code)
+

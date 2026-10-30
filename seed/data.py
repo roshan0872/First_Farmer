@@ -1335,3 +1335,4 @@ TRANSLATION_RECORDS = [
     {"entity_type": "crop", "slug": "green-gram-pulses", "field": "name", "lang": "hi", "title": "मूंग (दाल)", "content": "मूंग (हरी दाल)"},
     {"entity_type": "crop", "slug": "green-gram-pulses", "field": "description", "lang": "hi", "title": "मूंग का विवरण", "content": "कम अवधि (60-70 दिन) में पकने वाली दलहनी फसल, जो फसल चक्र और मिट्टी संवर्धन के लिए सर्वोत्तम है।"}
 ]
+

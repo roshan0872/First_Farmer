@@ -51,3 +51,4 @@ def test_login_throttling_lockout(client):
     res = client.post("/api/auth/login", json={"email": email, "password": "WrongPassword!"})
     assert res.status_code == 429
     assert "Too many failed attempts" in res.get_json()["error"]
+

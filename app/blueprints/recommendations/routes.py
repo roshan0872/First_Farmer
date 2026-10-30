@@ -57,3 +57,4 @@ def recommend():
         results=results,
         has_searched=has_searched,
     )
+

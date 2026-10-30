@@ -19,3 +19,4 @@ def verify_password(hash_str: str, password: str) -> bool:
         return ph.verify(hash_str, password)
     except (VerifyMismatchError, VerificationError, Exception):
         return False
+

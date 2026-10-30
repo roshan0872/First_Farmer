@@ -53,3 +53,4 @@ first-farmer-agriculture-system/
 ├── tests/                      # Pytest automated test suite
 └── docs/                       # Architecture, DB schema, API guide, deployment, and i18n review
 ```
+

@@ -98,3 +98,4 @@ def fetch_weather_for_location(location: str) -> dict:
         return {"error": f"Unable to reach weather provider: {str(e)}", "status_code": 502}
     except Exception as e:
         return {"error": f"An unexpected error occurred: {str(e)}", "status_code": 500}
+

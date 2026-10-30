@@ -59,3 +59,4 @@ class Region(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "name": self.name, "state": self.state, "zone": self.zone}
+

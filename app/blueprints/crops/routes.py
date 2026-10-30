@@ -123,3 +123,4 @@ def detail(slug):
         has_translation=has_translation,
         current_lang=lang,
     )
+

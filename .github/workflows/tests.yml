@@ -34,3 +34,4 @@ jobs:
           SECRET_KEY: test-key-for-continuous-integration-pipeline
         run: |
           pytest -v
+

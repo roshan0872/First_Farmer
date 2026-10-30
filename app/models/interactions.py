@@ -31,3 +31,4 @@ class Translation(db.Model):
     language_code = db.Column(db.String(10), nullable=False)  # 'ta', 'hi'
     translated_title = db.Column(db.String(255), nullable=True)
     translated_content = db.Column(db.Text, nullable=False)
+

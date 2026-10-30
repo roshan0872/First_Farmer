@@ -60,3 +60,4 @@ def test_bookmark_create_and_remove(student_client):
     res_del = student_client.delete("/api/bookmarks/1")
     assert res_del.status_code == 200
     assert res_del.get_json()["bookmarked"] is False
+

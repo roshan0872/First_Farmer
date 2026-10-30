@@ -163,3 +163,4 @@ Protected by server-side `@admin_required` checks:
 - `POST /api/crops`: Create new crop
 - `PUT /api/crops/<id>`: Update crop
 - `DELETE /api/crops/<id>`: Delete crop and cascading guides
+

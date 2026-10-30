@@ -36,3 +36,4 @@ def index():
         suggested_questions=suggested_questions,
         conversation_id=session["conv_id"],
     )
+

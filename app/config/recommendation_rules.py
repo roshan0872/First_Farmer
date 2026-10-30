@@ -30,3 +30,4 @@ WATER_COMPATIBILITY = {
 }
 
 DISCLAIMER_TEXT = "Preliminary educational suggestion. Verify with local agricultural guidance and a soil test before making cultivation decisions."
+

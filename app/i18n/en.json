@@ -78,3 +78,4 @@
   "chat_retrieval_notice": "Running in retrieval-based educational mode. Verified against agriculture database records.",
   "chat_unknown_response": "I could not find a verified answer in the database. For local agricultural advice, please consult your nearest agricultural university or Krishi Vigyan Kendra (KVK)."
 }
+

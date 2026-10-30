@@ -78,3 +78,4 @@ def admin_client(app, client):
         sess["user_id"] = admin.id
         sess["lang"] = "en"
     return client
+

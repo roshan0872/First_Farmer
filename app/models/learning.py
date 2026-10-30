@@ -86,3 +86,4 @@ class QuizAttempt(db.Model):
 
     user = db.relationship("User", back_populates="quiz_attempts")
     crop = db.relationship("Crop")
+

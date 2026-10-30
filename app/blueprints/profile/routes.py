@@ -68,3 +68,4 @@ def clear_chat():
     db.session.commit()
     flash("Your agriculture chatbot conversation history has been cleared.", "info")
     return redirect(request.referrer or url_for("profile.index"))
+

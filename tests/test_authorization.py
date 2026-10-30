@@ -18,3 +18,4 @@ def test_admin_authorized_on_admin(admin_client):
     res = admin_client.get("/admin/")
     assert res.status_code == 200
     assert b"Administrator" in res.data
+

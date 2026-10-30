@@ -14,3 +14,4 @@ def index():
         weather=weather_data,
         location=location,
     )
+
